@@ -139,11 +139,11 @@ document.addEventListener('DOMContentLoaded', function() {
             three: expandRange('AA-TT,AKs-AJs,KQs-KJs,QJs,AKo-AQo,KQo')
         },
         mp: {
-            call:  expandRange('88-22,A9s-A6s,A3s-A2s,K9s-K6s,Q9s,J9s,T9s-T8s,98s-97s,87s-86s,76s-75s,65s-64s,54s,AJo-ATo,KJo'),
-            three: expandRange('AA-TT,AKs-AJs,A5s-A4s,KQs-KJs,QJs,AKo-AQo,KQo')
+            call:  expandRange('99-22,ATs-A6s,A3s-A2s,KTs-K6s,QTs-Q9s,JTs-J9s,T9s-T8s,98s-97s,87s-86s,76s-75s,65s-64s,54s,AJo-ATo,KJo'),
+            three: expandRange('AA-TT,AKs-AJs,KQs-KJs,QJs,AKo-AQo,KQo')
         },
         co: {
-            call:  expandRange('99-22,ATs-A6s,A3s-A2s,K9s-K2s,QTs-Q8s,JTs-J8s,T9s-T8s,98s-97s,87s-86s,76s-75s,65s-64s,54s-53s,43s,ATo,KJo-KTo,QJo'),
+            call:  expandRange('99-22,A9s-A6s,A3s-A2s,K9s-K2s,QTs-Q9s,JTs-J9s,T9s-T8s,98s-97s,87s-86s,76s-75s,65s-64s,54s-53s,43s,ATo,KJo-KTo,QJo'),
             three: expandRange('AA-TT,AKs-ATs,A5s-A4s,KQs-KTs,QJs,AKo-AJo,KQo')
         },
         btn: {
@@ -151,12 +151,12 @@ document.addEventListener('DOMContentLoaded', function() {
             three: expandRange('AA-99,AKs-A9s,A5s-A4s,KQs-K9s,QJs-QTs,JTs,AKo-ATo,KQo-KJo')
         },
         sb: {
-            call:  expandRange('88-22,A9s-A2s,K9s-K2s,Q9s-Q2s,J9s-J5s,T8s-T6s,97s-96s,86s-85s,75s-74s,64s,53s,43s,ATo-A8o,KTo,QJo-QTo,JTo,T9o'),
+            call:  expandRange('77-22,A9s-A2s,K9s-K2s,Q9s-Q2s,J9s-J5s,T8s-T6s,97s-96s,86s-85s,75s-74s,64s,53s,43s,ATo-A8o,KJo-KTo,QJo-QTo,JTo,T9o'),
             three: expandRange('AA-88,AKs-ATs,KQs-KTs,QJs-QTs,JTs,T9s,98s,87s,76s,65s,54s,AKo-AJo,A7o-A5o,KQo,K9o,Q9o,J9o')
         }
     };
 
-    function getDefendBBAction(handCode, raiseSize, villainPos) {
+    function getDefendBBAction(handCode, villainPos) {
         const def = bbDefense[villainPos];
         if (!def) return 'fold';
 
@@ -181,36 +181,52 @@ document.addEventListener('DOMContentLoaded', function() {
         sb:  'IMG/PFR/SB_pfr.jpg'
     };
 
+    // Чарт защиты BB в зависимости от позиции рейзера
+    const defBbImages = {
+        ep:  'IMG/DEF_BB/VS_EP.jpeg',
+        mp:  'IMG/DEF_BB/VS_MP.jpeg',
+        co:  'IMG/DEF_BB/VS_CO.jpeg',
+        btn: 'IMG/DEF_BB/VS_BU.jpeg',
+        sb:  'IMG/DEF_BB/VS_SB.jpeg'
+    };
+
     let currentVillainPos = null;
 
     function showRangePopup(position, clientX, clientY) {
-        const src = pfrImages[position];
-        if (!src) {
-            console.warn('[Range] Нет пути для позиции:', position);
-            return;
-        }
         if (!rangePopup || !rangePopupImg) {
             console.warn('[Range] Элемент #rangePopup не найден в HTML');
             return;
         }
 
-        if (rangePopupImg.getAttribute('data-pos') !== position) {
-            rangePopupImg.setAttribute('data-pos', position);
+        let src = null;
+        let title = '';
+        let cacheKey = position;
+
+        // Наведение на BB → чарт защиты vs текущий рейзер
+        if (position === 'bb') {
+            if (!currentVillainPos || !defBbImages[currentVillainPos]) {
+                return; // нет активного рейзера — нечего показывать
+            }
+            src = defBbImages[currentVillainPos];
+            title = 'BB vs ' + (positionNames[currentVillainPos] || currentVillainPos.toUpperCase());
+            cacheKey = 'bb_vs_' + currentVillainPos;
+        } else {
+            src = pfrImages[position];
+            if (!src) return;
+            title = (positionNames[position] || position.toUpperCase()) + ' Open Raise';
+            cacheKey = 'pfr_' + position;
+        }
+
+        if (rangePopupImg.getAttribute('data-key') !== cacheKey) {
+            rangePopupImg.setAttribute('data-key', cacheKey);
             rangePopupImg.src = src;
             rangePopupImg.onerror = function () {
-                console.error('[Range] Не загрузилось:', src, '— проверь путь и имя файла');
-                if (rangePopupTitle) {
-                    rangePopupTitle.textContent = 'Не найден: ' + src;
-                }
-            };
-            rangePopupImg.onload = function () {
-                console.log('[Range] Загружено:', src);
+                console.error('[Range] Не загрузилось:', src);
+                if (rangePopupTitle) rangePopupTitle.textContent = 'Не найден: ' + src;
             };
         }
 
-        if (rangePopupTitle) {
-            rangePopupTitle.textContent = (positionNames[position] || position.toUpperCase()) + ' Open Raise';
-        }
+        if (rangePopupTitle) rangePopupTitle.textContent = title;
 
         rangePopup.classList.add('visible');
         rangePopup.style.display = 'block';
@@ -219,7 +235,6 @@ document.addEventListener('DOMContentLoaded', function() {
         let x = (typeof clientX === 'number' ? clientX : 100) + pad;
         let y = (typeof clientY === 'number' ? clientY : 100) + pad;
 
-        // сдвигаем после показа, чтобы знать реальный размер
         requestAnimationFrame(function () {
             const rect = rangePopup.getBoundingClientRect();
             const w = rect.width || 500;
@@ -258,18 +273,18 @@ document.addEventListener('DOMContentLoaded', function() {
         clearBetsOnTable();
         currentVillainPos = position;
 
-        const betChip = document.querySelector('.position-wrapper--' + position + ' .bet-chip');
-        if (betChip) {
-            betChip.textContent = betSize + ' BB';
-            betChip.classList.add('visible');
+        // Фишка с размером — только если размер передан
+        if (betSize !== null && betSize !== undefined && betSize !== '') {
+            const betChip = document.querySelector('.position-wrapper--' + position + ' .bet-chip');
+            if (betChip) {
+                betChip.textContent = betSize + ' BB';
+                betChip.classList.add('visible');
+            }
         }
 
         const posElement = document.querySelector('.position[data-pos="' + position + '"]');
         if (posElement) {
             posElement.classList.add('position--villain');
-            console.log('[Range] Рейзер отмечен:', position, '→', pfrImages[position]);
-        } else {
-            console.warn('[Range] Не найден элемент позиции:', position);
         }
     }
 
@@ -281,7 +296,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const pos = posEl.getAttribute('data-pos');
         // Для BB нет open-raise картинки
-        if (!pos || pos === 'bb' || !pfrImages[pos]) return;
+        if (!pos) return;
+        // BB — только если есть рейзер; остальные — если есть PFR-картинка
+        if (pos === 'bb') {
+            if (!currentVillainPos) return;
+        } else if (!pfrImages[pos]) {
+            return;
+        }
 
         showRangePopup(pos, e.clientX, e.clientY);
     });
@@ -293,7 +314,12 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!posEl) return;
 
         const pos = posEl.getAttribute('data-pos');
-        if (!pos || pos === 'bb' || !pfrImages[pos]) return;
+        if (!pos) return;
+        if (pos === 'bb') {
+            if (!currentVillainPos) return;
+        } else if (!pfrImages[pos]) {
+            return;
+        }
 
         showRangePopup(pos, e.clientX, e.clientY);
     });
@@ -397,16 +423,12 @@ document.addEventListener('DOMContentLoaded', function() {
             ? availableVillains[Math.floor(Math.random() * availableVillains.length)] 
             : 'ep';
         
-        let raiseSize;
-        if (selectedRaiseSize === 'both') {
-            raiseSize = Math.random() < 0.5 ? 2.5 : 3;
-        } else {
-            raiseSize = parseFloat(selectedRaiseSize);
-        }
+        // Фиксированный сайзинг для отображения фишки (на решение не влияет)
+        const raiseSize = 3;
         
         const cards = generateHand();
         const handCode = getHandCode(cards[0], cards[1]);
-        const correctAction = getDefendBBAction(handCode, raiseSize, villainPos);
+        const correctAction = getDefendBBAction(handCode, villainPos);
         
         return { cards, handCode, heroPos, villainPos, raiseSize, correctAction };
     }
@@ -579,8 +601,8 @@ document.addEventListener('DOMContentLoaded', function() {
         
         let actionText = '';
         if (error.mode === 'defend_bb') {
-            actionText = '🔄 ПОВТОР: ' + positionNames[error.villainPos] + ' открылся ' + error.raiseSize + 'bb. Защита BB.';
-            showBetOnPosition(error.villainPos, error.raiseSize);
+            actionText = '';
+            showBetOnPosition(error.villainPos, null);
         } else if (error.mode === '3bet') {
             actionText = '🔄 ПОВТОР: ' + positionNames[error.villainPos] + ' открылся ' + error.raiseSize + 'bb. Ваш 3-бет?';
             showBetOnPosition(error.villainPos, error.raiseSize);
@@ -588,7 +610,7 @@ document.addEventListener('DOMContentLoaded', function() {
             actionText = '';
             clearBetsOnTable();
         } else {
-            actionText = '🔄 ПОВТОР ошибки. Ваше действие?';
+            actionText = '';
         }
         
         if (situationInfo) situationInfo.innerHTML = actionText;
@@ -697,7 +719,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 buttons: ['fold', 'call', 'raise'], 
                 names: { 
                     fold: '✗ FOLD', 
-                    call: '○ CALL (' + (context.raiseSize || 2.5) + 'bb)', 
+                    call: '○ CALL', 
                     raise: '▲ 3BET' 
                 } 
             }
@@ -826,7 +848,7 @@ document.addEventListener('DOMContentLoaded', function() {
             case 'defend_bb':
                 situation = generateDefendBBSituation();
                 context = { raiseSize: situation.raiseSize };
-                showBetOnPosition(situation.villainPos, situation.raiseSize);
+                showBetOnPosition(situation.villainPos, null);
                 break;
             default:
                 situation = generateRfiSituation();
@@ -855,11 +877,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Текст ситуации
         if (situationInfo) {
-            if (currentMode === 'defend_bb') {
-                situationInfo.innerHTML = positionNames[situation.villainPos] + ' открылся на ' + situation.raiseSize + 'bb. Защита BB.';
-            } else if (currentMode === 'rfi') {
-                situationInfo.innerHTML = '';
-            } else if (currentMode === '3bet') {
+            if (currentMode === '3bet') {
                 situationInfo.innerHTML = positionNames[situation.villainPos] + ' открылся на ' + situation.raiseSize + 'bb. Ваш 3-bet?';
             } else {
                 situationInfo.innerHTML = '';
@@ -934,11 +952,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 btn.classList.add('active');
                 currentMode = btn.dataset.mode;
                 
-                if (currentMode === 'defend_bb') {
-                    if (raiseSizeBlock) raiseSizeBlock.style.display = 'block';
-                } else {
-                    if (raiseSizeBlock) raiseSizeBlock.style.display = 'none';
-                }
+                if (raiseSizeBlock) raiseSizeBlock.style.display = 'none';
                 
                 updatePositionsVisibility();
                 

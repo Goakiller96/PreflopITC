@@ -16,14 +16,12 @@
             </div>
         </header>
 
-        <!-- РЕЖИМЫ -->
         <div class="modes">
             <button class="mode-btn active" data-mode="rfi">RFI (Open Raise)</button>
             <button class="mode-btn" data-mode="defend_bb">Защита BB</button>
             <button class="mode-btn" data-mode="3bet">3-Bet</button>
         </div>
 
-        <!-- SETUP -->
         <div class="setup" id="setupPanel">
             <h2 class="setup__title">Выберите позиции</h2>
 
@@ -43,20 +41,9 @@
                 <label><input type="checkbox" class="pos-check" value="bb"> BB</label>
             </div>
 
-            <!-- Размер рейза для защиты BB -->
-            <div id="raiseSizeBlock" class="raise-size-block" style="display:none;">
-                <p class="raise-size-label">Размер опен-рейза:</p>
-                <div class="size-buttons">
-                    <button class="size-btn" data-size="2.5">2.5 bb</button>
-                    <button class="size-btn active" data-size="3">3 bb</button>
-                    <button class="size-btn" data-size="both">Оба</button>
-                </div>
-            </div>
-
             <button class="setup__start-btn" id="startBtn">Начать тренировку</button>
         </div>
 
-        <!-- GAME -->
         <div id="gamePanel" style="display: none;">
             <div class="session-stats">
                 Сессия: <span id="sessionCorrect">0</span> / <span id="sessionTotal">0</span>
@@ -100,9 +87,7 @@
 
             <div id="situationInfo" class="situation-info"></div>
 
-            <div class="actions" id="actionsPanel">
-                <!-- кнопки рендерятся из JS -->
-            </div>
+            <div class="actions" id="actionsPanel"></div>
 
             <div class="result" id="resultPanel">
                 <div id="resultMessage" class="result__message"></div>
@@ -111,7 +96,6 @@
         </div>
     </div>
 
-    <!-- STATS MODAL -->
     <div class="modal" id="statsModal">
         <div class="modal__content">
             <div class="modal__header">
@@ -141,7 +125,6 @@
         </div>
     </div>
 
-    <!-- Range popup on hover -->
     <div class="range-popup" id="rangePopup">
         <div class="range-popup__title" id="rangePopupTitle"></div>
         <img id="rangePopupImg" src="" alt="Range chart">

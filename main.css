@@ -16,15 +16,11 @@ body {
     justify-content: center;
     padding: 12px 16px;
     overflow-x: hidden;
-    overflow-y: auto;
 }
 
 .trainer {
     width: 100%;
     max-width: 1000px;
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
 }
 
 /* Header */
@@ -32,23 +28,21 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 8px;
+    margin-bottom: 12px;
     padding: 0 6px;
-    flex-shrink: 0;
 }
 
 .trainer__title {
-    font-size: clamp(1.3rem, 3vw, 2rem);
+    font-size: 2rem;
     font-weight: 700;
     color: #00ff9d;
     cursor: pointer;
     user-select: none;
-    transition: color 0.2s, opacity 0.2s;
+    transition: color 0.2s;
 }
 
 .trainer__title:hover {
     color: #fff;
-    opacity: 0.9;
 }
 
 .header-right {
@@ -63,7 +57,7 @@ body {
     color: #00ff9d;
     border: 2px solid #00ff9d;
     border-radius: 8px;
-    font-size: 1.1rem;
+    font-size: 1.05rem;
     cursor: pointer;
     transition: all 0.2s;
 }
@@ -82,23 +76,22 @@ body {
     font-weight: 600;
 }
 
-/* ===================== MODES ===================== */
+/* Modes */
 .modes {
     display: flex;
     justify-content: center;
-    gap: 8px;
-    margin-bottom: 8px;
+    gap: 10px;
+    margin-bottom: 16px;
     flex-wrap: wrap;
-    flex-shrink: 0;
 }
 
 .mode-btn {
-    padding: 7px 16px;
+    padding: 10px 22px;
     background: #1e3a3a;
     color: #aaa;
     border: 2px solid #334444;
     border-radius: 50px;
-    font-size: 0.9rem;
+    font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s;
@@ -115,13 +108,13 @@ body {
     border-color: #00ff9d;
 }
 
-/* ===================== SETUP ===================== */
+/* Setup */
 .setup {
     background: #1a2b2a;
-    padding: 24px 28px;
+    padding: 30px;
     border-radius: 16px;
     text-align: center;
-    margin-bottom: 12px;
+    margin-bottom: 16px;
 }
 
 .setup__title {
@@ -130,26 +123,26 @@ body {
 }
 
 .setup__positions {
-    margin: 20px 0;
+    margin: 16px 0;
 }
 
 .setup__checkbox {
     display: block;
-    font-size: 1.3rem;
-    margin-bottom: 15px;
+    font-size: 1.25rem;
+    margin-bottom: 12px;
 }
 
 .setup__specific {
     display: flex;
     flex-wrap: wrap;
-    gap: 15px;
+    gap: 12px;
     justify-content: center;
-    margin-top: 15px;
+    margin-top: 12px;
 }
 
 .setup__specific label {
     background: #223b3a;
-    padding: 12px 24px;
+    padding: 12px 22px;
     border-radius: 50px;
     cursor: pointer;
 }
@@ -158,41 +151,10 @@ body {
     margin-right: 8px;
 }
 
-.raise-size-block {
-    margin: 20px 0 10px;
-}
-
-.raise-size-label {
-    margin-bottom: 10px;
-    color: #aaa;
-}
-
-.size-buttons {
-    display: flex;
-    gap: 10px;
-    justify-content: center;
-}
-
-.size-btn {
-    padding: 8px 18px;
-    background: #223b3a;
-    color: #ccc;
-    border: 2px solid #334444;
-    border-radius: 20px;
-    cursor: pointer;
-    font-size: 0.95rem;
-}
-
-.size-btn.active {
-    background: #00c97d;
-    color: #0f1b1a;
-    border-color: #00ff9d;
-}
-
 .setup__start-btn {
-    margin-top: 16px;
-    padding: 12px 48px;
-    font-size: 1.2rem;
+    margin-top: 25px;
+    padding: 16px 60px;
+    font-size: 1.4rem;
     font-weight: 600;
     background: #00c97d;
     color: #0f1b1a;
@@ -207,23 +169,22 @@ body {
     transform: scale(1.05);
 }
 
+/* Game */
 #gamePanel {
     display: none;
     flex-direction: column;
     align-items: center;
 }
 
-/* ===================== SESSION ===================== */
 .session-stats {
     text-align: center;
-    margin-bottom: 4px;
-    font-size: 0.95rem;
+    margin-bottom: 8px;
+    font-size: 1rem;
     color: #aaa;
-    flex-shrink: 0;
 }
 
 .reset-link {
-    margin-left: 16px;
+    margin-left: 14px;
     color: #00ff9d;
     text-decoration: none;
     font-size: 0.95rem;
@@ -233,21 +194,18 @@ body {
     text-decoration: underline;
 }
 
-/* ===================== TABLE ===================== */
+/* Table */
 .table {
     display: flex;
     justify-content: center;
-    align-items: center;
-    margin: 25px auto;
+    margin: 12px auto;
     width: 100%;
 }
 
 .table__oval {
-    /* Сохраняем пропорции овала, не сплющиваем */
     --table-w: min(680px, 90vw);
     width: var(--table-w);
     height: calc(var(--table-w) * 0.58);
-    max-height: none;
     background: radial-gradient(circle at center, #0a6b3d 0%, #054d2b 70%, #03391f 100%);
     border: 16px solid #8b5a2b;
     border-radius: 50%;
@@ -261,10 +219,10 @@ body {
 }
 
 .position-wrapper--ep   { top: 14%; left: 4%; }
-.position-wrapper--mp   { top: -12%;  left: 50%; transform: translateX(-50%); }
+.position-wrapper--mp   { top: -7%; left: 50%; transform: translateX(-50%); }
 .position-wrapper--co   { top: 14%; right: 4%; }
 .position-wrapper--btn  { bottom: 12%; right: 5%; }
-.position-wrapper--sb   { bottom: -12%; left: 50%; transform: translateX(-50%); }
+.position-wrapper--sb   { bottom: -7%; left: 50%; transform: translateX(-50%); }
 .position-wrapper--bb   { bottom: 12%; left: 5%; }
 
 .position {
@@ -281,6 +239,7 @@ body {
     color: #fff;
     transition: all 0.2s;
     position: relative;
+    cursor: pointer;
 }
 
 .position--active {
@@ -300,7 +259,6 @@ body {
     box-shadow: 0 0 25px rgba(255, 107, 53, 0.95) !important;
 }
 
-/* bet chip */
 .bet-chip {
     position: absolute;
     left: 50%;
@@ -337,7 +295,7 @@ body {
     display: flex;
     gap: 12px;
     justify-content: center;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
 }
 
 .card {
@@ -363,28 +321,26 @@ body {
 }
 
 .current-position {
-    display: none; /* подпись позиции в центре стола скрыта */
+    display: none;
 }
 
-/* ===================== SITUATION ===================== */
+/* Situation / actions / result */
 .situation-info {
     text-align: center;
-    font-size: clamp(0.9rem, 1.5vw, 1.1rem);
+    font-size: 1.1rem;
     color: #ccc;
-    margin: 4px 0;
-    min-height: 22px;
-    flex-shrink: 0;
+    margin: 8px 0 4px;
+    min-height: 24px;
 }
 
-/* ===================== ACTIONS ===================== */
 .actions {
     display: flex;
     justify-content: center;
     gap: 14px;
     margin-top: 12px;
-    position: relative;
-    z-index: 20;
     flex-wrap: wrap;
+    z-index: 20;
+    position: relative;
 }
 
 .action-btn {
@@ -403,7 +359,7 @@ body {
 }
 .action-btn--fold:hover {
     background: #e63c3c;
-    transform: translateY(-3px);
+    transform: translateY(-2px);
 }
 
 .action-btn--raise,
@@ -414,7 +370,7 @@ body {
 .action-btn--raise:hover,
 .action-btn--3bet:hover {
     background: #00ff9d;
-    transform: translateY(-3px);
+    transform: translateY(-2px);
 }
 
 .action-btn--call {
@@ -423,21 +379,16 @@ body {
 }
 .action-btn--call:hover {
     background: #3c7ee6;
-    transform: translateY(-3px);
+    transform: translateY(-2px);
 }
 
 .action-btn--4bet {
     background: #c47a2d;
     color: white;
 }
-.action-btn--4bet:hover {
-    background: #e6933c;
-    transform: translateY(-3px);
-}
 
-/* ===================== RESULT ===================== */
 .result {
-    margin-top: 12px;
+    margin-top: 14px;
     text-align: center;
     min-height: 80px;
 }
@@ -451,9 +402,6 @@ body {
     justify-content: center;
     font-weight: 600;
 }
-
-.result__message.correct { color: #00ff9d; }
-.result__message.wrong { color: #ff4d4d; }
 
 .result__next-btn {
     padding: 10px 32px;
@@ -476,7 +424,7 @@ body {
     visibility: visible;
 }
 
-/* ===================== MODAL ===================== */
+/* Modal */
 .modal {
     display: none;
     position: fixed;
@@ -495,6 +443,7 @@ body {
     padding: 30px 40px;
     border-radius: 16px;
     width: 400px;
+    max-width: 92vw;
     border: 3px solid #00ff9d;
     text-align: center;
 }
@@ -503,7 +452,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 25px;
+    margin-bottom: 22px;
 }
 
 .modal__close {
@@ -517,12 +466,12 @@ body {
 .stats__item {
     display: flex;
     justify-content: space-between;
-    font-size: 1.25rem;
-    margin: 14px 0;
+    font-size: 1.2rem;
+    margin: 12px 0;
 }
 
 .stats__reset-btn {
-    margin-top: 16px;
+    margin-top: 14px;
     width: 100%;
     padding: 12px;
     background: #c42d2d;
@@ -534,7 +483,7 @@ body {
 }
 
 .stats__review-btn {
-    margin-top: 20px;
+    margin-top: 18px;
     width: 100%;
     padding: 12px;
     background: #2d6bc4;
@@ -545,7 +494,7 @@ body {
     cursor: pointer;
 }
 
-/* ===================== RANGE POPUP ===================== */
+/* Range popup */
 .range-popup {
     position: fixed;
     z-index: 2000;
@@ -581,17 +530,7 @@ body {
     margin-bottom: 6px;
 }
 
-/* Курсор на позициях с доступным чартом */
-.position[data-pos="ep"],
-.position[data-pos="mp"],
-.position[data-pos="co"],
-.position[data-pos="btn"],
-.position[data-pos="sb"] {
-    cursor: pointer;
-}
-
-
-/* ===================== ADAPTIVE ===================== */
+/* Adaptive */
 @media (max-width: 900px) {
     .table__oval {
         --table-w: min(600px, 92vw);
@@ -603,10 +542,10 @@ body {
         font-size: 0.8rem;
     }
     .position-wrapper--ep   { top: 10%; left: 2%; }
-    .position-wrapper--mp   { top: -12%; left: 50%; transform: translateX(-50%); }
+    .position-wrapper--mp   { top: -9%; left: 50%; transform: translateX(-50%); }
     .position-wrapper--co   { top: 10%; right: 2%; }
     .position-wrapper--btn  { bottom: 8%; right: 2%; }
-    .position-wrapper--sb   { bottom: -12%; left: 50%; transform: translateX(-50%); }
+    .position-wrapper--sb   { bottom: -9%; left: 50%; transform: translateX(-50%); }
     .position-wrapper--bb   { bottom: 8%; left: 2%; }
     .card {
         width: 58px;
@@ -629,14 +568,12 @@ body {
         font-size: 0.65rem;
         border-width: 2px;
     }
-    /* Позиции ближе к краю стола, чтобы не перекрывать карты */
-    .position-wrapper--ep   { top: 8%;  left: 0%; }
-    .position-wrapper--mp   { top: -19%; left: 50%; transform: translateX(-50%); }
-    .position-wrapper--co   { top: 8%;  right: 0%; }
+    .position-wrapper--ep   { top: 8%; left: 0%; }
+    .position-wrapper--mp   { top: -10%; left: 50%; transform: translateX(-50%); }
+    .position-wrapper--co   { top: 8%; right: 0%; }
     .position-wrapper--btn  { bottom: 6%; right: 0%; }
-    .position-wrapper--sb   { bottom: -17%; left: 50%; transform: translateX(-50%); }
+    .position-wrapper--sb   { bottom: -10%; left: 50%; transform: translateX(-50%); }
     .position-wrapper--bb   { bottom: 6%; left: 0%; }
-
     .card {
         width: 48px;
         height: 68px;
@@ -653,39 +590,15 @@ body {
         padding: 6px 12px;
         font-size: 0.8rem;
     }
+    .setup__start-btn {
+        padding: 14px 40px;
+        font-size: 1.2rem;
+    }
 }
 
-/* Если экран низкий по высоте — чуть уменьшаем стол, сохраняя пропорции */
 @media (max-height: 750px) {
     .table__oval {
         --table-w: min(560px, 88vw);
         border-width: 12px;
-    }
-    .card {
-        width: 56px;
-        height: 80px;
-        font-size: 1.5rem;
-    }
-    .card__suit {
-        font-size: 1.8rem;
-    }
-    .actions {
-        margin-top: 8px;
-    }
-    .result {
-        margin-top: 8px;
-        min-height: 64px;
-    }
-}
-
-@media (max-height: 650px) {
-    .table__oval {
-        --table-w: min(480px, 85vw);
-        border-width: 10px;
-    }
-    .position {
-        width: 46px;
-        height: 46px;
-        font-size: 0.75rem;
     }
 }
