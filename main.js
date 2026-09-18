@@ -565,7 +565,7 @@ document.addEventListener('DOMContentLoaded', function() {
         };
         currentHandResolved = false;
         
-        if (currentPositionEl) currentPositionEl.innerHTML = '<strong>' + positionNames[error.position] + '</strong>';
+        if (currentPositionEl) currentPositionEl.innerHTML = '';
         
         document.querySelectorAll('.position').forEach(pos => {
             pos.classList.remove('position--active');
@@ -834,7 +834,7 @@ document.addEventListener('DOMContentLoaded', function() {
         };
         currentHandResolved = false;
         
-        if (currentPositionEl) currentPositionEl.innerHTML = '<strong>' + positionNames[situation.heroPos] + '</strong>';
+        if (currentPositionEl) currentPositionEl.innerHTML = '';
         
         document.querySelectorAll('.position').forEach(pos => {
             pos.classList.remove('position--active');

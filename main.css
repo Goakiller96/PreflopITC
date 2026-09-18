@@ -260,12 +260,12 @@ body {
     z-index: 2;
 }
 
-.position-wrapper--ep   { top: 16%; left: 8%; }
-.position-wrapper--mp   { top: 1%;  left: 50%; transform: translateX(-50%); }
-.position-wrapper--co   { top: 16%; right: 8%; }
-.position-wrapper--btn  { bottom: 14%; right: 10%; }
-.position-wrapper--bb   { bottom: 14%; left: 10%; }
-.position-wrapper--sb   { bottom: 1%; left: 50%; transform: translateX(-50%); }
+.position-wrapper--ep   { top: 14%; left: 4%; }
+.position-wrapper--mp   { top: -12%;  left: 50%; transform: translateX(-50%); }
+.position-wrapper--co   { top: 14%; right: 4%; }
+.position-wrapper--btn  { bottom: 12%; right: 5%; }
+.position-wrapper--sb   { bottom: -12%; left: 50%; transform: translateX(-50%); }
+.position-wrapper--bb   { bottom: 12%; left: 5%; }
 
 .position {
     width: 60px;
@@ -363,9 +363,7 @@ body {
 }
 
 .current-position {
-    font-size: 1.4rem;
-    font-weight: 600;
-    color: #fff;
+    display: none; /* подпись позиции в центре стола скрыта */
 }
 
 /* ===================== SITUATION ===================== */
@@ -600,17 +598,23 @@ body {
         border-width: 14px;
     }
     .position {
-        width: 54px;
-        height: 54px;
-        font-size: 0.85rem;
+        width: 50px;
+        height: 50px;
+        font-size: 0.8rem;
     }
+    .position-wrapper--ep   { top: 10%; left: 2%; }
+    .position-wrapper--mp   { top: -12%; left: 50%; transform: translateX(-50%); }
+    .position-wrapper--co   { top: 10%; right: 2%; }
+    .position-wrapper--btn  { bottom: 8%; right: 2%; }
+    .position-wrapper--sb   { bottom: -12%; left: 50%; transform: translateX(-50%); }
+    .position-wrapper--bb   { bottom: 8%; left: 2%; }
     .card {
-        width: 60px;
-        height: 86px;
-        font-size: 1.6rem;
+        width: 58px;
+        height: 82px;
+        font-size: 1.55rem;
     }
     .card__suit {
-        font-size: 2rem;
+        font-size: 1.9rem;
     }
 }
 
@@ -620,18 +624,26 @@ body {
         border-width: 10px;
     }
     .position {
-        width: 44px;
-        height: 44px;
-        font-size: 0.7rem;
+        width: 40px;
+        height: 40px;
+        font-size: 0.65rem;
         border-width: 2px;
     }
+    /* Позиции ближе к краю стола, чтобы не перекрывать карты */
+    .position-wrapper--ep   { top: 8%;  left: 0%; }
+    .position-wrapper--mp   { top: -19%; left: 50%; transform: translateX(-50%); }
+    .position-wrapper--co   { top: 8%;  right: 0%; }
+    .position-wrapper--btn  { bottom: 6%; right: 0%; }
+    .position-wrapper--sb   { bottom: -17%; left: 50%; transform: translateX(-50%); }
+    .position-wrapper--bb   { bottom: 6%; left: 0%; }
+
     .card {
-        width: 50px;
-        height: 72px;
-        font-size: 1.3rem;
+        width: 48px;
+        height: 68px;
+        font-size: 1.25rem;
     }
     .card__suit {
-        font-size: 1.6rem;
+        font-size: 1.5rem;
     }
     .action-btn {
         padding: 10px 20px;
