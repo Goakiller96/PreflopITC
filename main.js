@@ -533,9 +533,12 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     function loadErrorForReview() {
-        if (currentErrorIndex >= errorHands.length) {
+        if (errorHands.length === 0) {
             finishErrorReview();
             return;
+        }
+        if (currentErrorIndex >= errorHands.length) {
+            currentErrorIndex = 0;
         }
         
         clearBetsOnTable();
@@ -581,7 +584,7 @@ document.addEventListener('DOMContentLoaded', function() {
             actionText = '🔄 ПОВТОР: ' + positionNames[error.villainPos] + ' открылся ' + error.raiseSize + 'bb. Ваш 3-бет?';
             showBetOnPosition(error.villainPos, error.raiseSize);
         } else if (error.mode === 'rfi') {
-            actionText = '🔄 ПОВТОР: Все сбросили. Ваша позиция: ' + positionNames[error.position] + '. RFI?';
+            actionText = '';
             clearBetsOnTable();
         } else {
             actionText = '🔄 ПОВТОР ошибки. Ваше действие?';
@@ -592,6 +595,13 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     function finishErrorReview() {
+        // Выходим из режима ошибок только когда список пуст
+        if (errorHands.length > 0) {
+            currentErrorIndex = 0;
+            loadErrorForReview();
+            return;
+        }
+
         isErrorMode = false;
         currentErrorIndex = 0;
         
@@ -599,12 +609,7 @@ document.addEventListener('DOMContentLoaded', function() {
             errorModeIndicator.style.display = 'none';
         }
         
-        if (errorHands.length > 0) {
-            showTemporaryMessage('✅ Работа над ошибками завершена! Осталось ошибок: ' + errorHands.length + '. Продолжайте тренировку.', '#00ff9d', 3000);
-        } else {
-            showTemporaryMessage('🎉 Отлично! Все ошибки исправлены!', '#00ff9d', 3000);
-        }
-        
+        showTemporaryMessage('🎉 Отлично! Все ошибки исправлены!', '#00ff9d', 3000);
         startNewHand();
     }
     
@@ -621,41 +626,56 @@ document.addEventListener('DOMContentLoaded', function() {
     
     function handleAnswerInErrorMode(selectedAction) {
         if (currentHandResolved) return;
+        if (!errorHands.length) {
+            finishErrorReview();
+            return;
+        }
         
         const error = errorHands[currentErrorIndex];
+        if (!error) {
+            currentErrorIndex = 0;
+            loadErrorForReview();
+            return;
+        }
+
         const isCorrect = (selectedAction === error.correctAction);
         const actionNames = { fold: 'ФОЛД', call: 'КОЛЛ', raise: 'РЕЙЗ', '3bet': '3БЕТ', '4bet': '4БЕТ', random: '50/50' };
         
         if (isCorrect) {
+            // Удаляем текущую ошибку; индекс остаётся на том же месте (туда сдвинется следующая)
             removeErrorFromList(currentErrorIndex);
-            resultMessage.innerHTML = '✅ ПРАВИЛЬНО! Ошибка исправлена!';
+            resultMessage.innerHTML = '✅ ПРАВИЛЬНО! Ошибка исправлена! Осталось: ' + errorHands.length;
             resultMessage.style.color = '#00ff9d';
             currentHandResolved = true;
             resultPanel.classList.add('active');
             
             setTimeout(() => {
-                if (currentErrorIndex < errorHands.length) {
-                    loadErrorForReview();
-                } else {
-                    finishErrorReview();
-                }
                 resultPanel.classList.remove('active');
+                if (errorHands.length === 0) {
+                    finishErrorReview();
+                } else {
+                    if (currentErrorIndex >= errorHands.length) {
+                        currentErrorIndex = 0;
+                    }
+                    loadErrorForReview();
+                }
             }, 1000);
         } else {
+            // Неверно — показываем ответ и идём к следующей ошибке в списке (по кругу)
             const correctText = actionNames[error.correctAction] || error.correctAction;
             resultMessage.innerHTML = '❌ СНОВА НЕПРАВИЛЬНО!<br>Правильно: ' + correctText;
             resultMessage.style.color = '#ff9999';
             currentHandResolved = true;
             resultPanel.classList.add('active');
-            currentErrorIndex++;
             
             setTimeout(() => {
-                if (currentErrorIndex < errorHands.length) {
-                    loadErrorForReview();
-                } else {
-                    finishErrorReview();
-                }
                 resultPanel.classList.remove('active');
+                if (errorHands.length === 0) {
+                    finishErrorReview();
+                    return;
+                }
+                currentErrorIndex = (currentErrorIndex + 1) % errorHands.length;
+                loadErrorForReview();
             }, 2000);
         }
         
@@ -1006,13 +1026,14 @@ document.addEventListener('DOMContentLoaded', function() {
     if (nextBtn) {
         nextBtn.addEventListener('click', () => {
             if (isErrorMode) {
-                currentErrorIndex++;
-                if (currentErrorIndex < errorHands.length) {
-                    loadErrorForReview();
-                    resultPanel.classList.remove('active');
-                } else {
+                resultPanel.classList.remove('active');
+                if (errorHands.length === 0) {
                     finishErrorReview();
+                    return;
                 }
+                // Переход к следующей ошибке по кругу, без выхода из режима
+                currentErrorIndex = (currentErrorIndex + 1) % errorHands.length;
+                loadErrorForReview();
             } else {
                 resultPanel.classList.remove('active');
                 startNewHand();
