@@ -523,7 +523,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if (statsModal) statsModal.style.display = 'none';
         if (setupPanel) setupPanel.style.display = 'none';
-        if (gamePanel) gamePanel.style.display = 'block';
+        if (gamePanel) gamePanel.style.display = 'flex';
         
         clearBetsOnTable();
         if (resultPanel) resultPanel.classList.remove('active');
@@ -750,12 +750,22 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             clearBetsOnTable();
         }
-        if (setupPanel) setupPanel.style.display = 'flex';
+        // Убираем inline-стили — вид как при первой загрузке страницы
+        if (setupPanel) setupPanel.style.display = '';
         if (gamePanel) gamePanel.style.display = 'none';
         currentHand = null;
         currentHandResolved = false;
-        if (resultPanel) resultPanel.classList.remove('active');
+        if (resultPanel) {
+            resultPanel.classList.remove('active');
+            resultPanel.style.display = '';
+        }
+        if (resultMessage) resultMessage.innerHTML = '';
+        if (situationInfo) situationInfo.innerHTML = '';
+        if (actionsPanel) actionsPanel.innerHTML = '';
+        if (playerHand) playerHand.innerHTML = '';
+        if (currentPositionEl) currentPositionEl.innerHTML = '';
         clearBetsOnTable();
+        hideRangePopup();
         updatePositionsVisibility();
     }
 
@@ -821,7 +831,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (currentMode === 'defend_bb') {
                 situationInfo.innerHTML = positionNames[situation.villainPos] + ' открылся на ' + situation.raiseSize + 'bb. Защита BB.';
             } else if (currentMode === 'rfi') {
-                situationInfo.innerHTML = 'Все сбросили. Ваша позиция: ' + positionNames[situation.heroPos] + '. Open Raise?';
+                situationInfo.innerHTML = '';
             } else if (currentMode === '3bet') {
                 situationInfo.innerHTML = positionNames[situation.villainPos] + ' открылся на ' + situation.raiseSize + 'bb. Ваш 3-bet?';
             } else {
@@ -868,7 +878,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const actionNames = { fold: 'ФОЛД', call: 'КОЛЛ', raise: 'РЕЙЗ', '3bet': '3БЕТ', '4bet': '4БЕТ', random: '50/50' };
         
         if (isCorrect) {
-            resultMessage.innerHTML = '✅ ПРАВИЛЬНО! (' + actionNames[selectedAction] + ')';
+            resultMessage.innerHTML = '✅ ПРАВИЛЬНО!';
             resultMessage.style.color = '#00ff9d';
         } else {
             let correctText = actionNames[currentHand.correctAction] || currentHand.correctAction;
@@ -929,6 +939,15 @@ document.addEventListener('DOMContentLoaded', function() {
             resetToSetupScreen();
         });
     }
+
+    // Клик по заголовку → главное меню
+    const titleEl = document.querySelector('.trainer__title');
+    if (titleEl) {
+        titleEl.addEventListener('click', () => {
+            resetToSetupScreen();
+        });
+        titleEl.title = 'На главную';
+    }
     
     if (allPositionsCheck) {
         allPositionsCheck.addEventListener('change', (e) => {
@@ -963,7 +982,7 @@ document.addEventListener('DOMContentLoaded', function() {
             updateSessionStatsUI();
             
             setupPanel.style.display = 'none';
-            gamePanel.style.display = 'block';
+            gamePanel.style.display = 'flex';
             startNewHand();
         });
     }
