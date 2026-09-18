@@ -524,6 +524,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (statsModal) statsModal.style.display = 'none';
         if (setupPanel) setupPanel.style.display = 'none';
         if (gamePanel) gamePanel.style.display = 'flex';
+        setModesVisible(false);
         
         clearBetsOnTable();
         if (resultPanel) resultPanel.classList.remove('active');
@@ -761,6 +762,11 @@ document.addEventListener('DOMContentLoaded', function() {
         showTemporaryMessage('🗑 Статистика и ошибки сброшены', '#00ff9d', 2000);
     }
     
+    function setModesVisible(visible) {
+        const modes = document.querySelector('.modes');
+        if (modes) modes.style.display = visible ? '' : 'none';
+    }
+
     function resetToSetupScreen() {
         if (isErrorMode) {
             isErrorMode = false;
@@ -773,6 +779,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Убираем inline-стили — вид как при первой загрузке страницы
         if (setupPanel) setupPanel.style.display = '';
         if (gamePanel) gamePanel.style.display = 'none';
+        setModesVisible(true);
         currentHand = null;
         currentHandResolved = false;
         if (resultPanel) {
@@ -1003,6 +1010,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             setupPanel.style.display = 'none';
             gamePanel.style.display = 'flex';
+            setModesVisible(false);
             startNewHand();
         });
     }
