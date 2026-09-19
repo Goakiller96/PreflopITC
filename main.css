@@ -28,7 +28,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 50px;
+    margin-bottom: 10px;
     margin-top: 0;
     padding: 0 6px;
 }
@@ -550,6 +550,9 @@ body {
 
 /* Adaptive */
 @media (max-width: 900px) {
+    .trainer__title {
+        font-size: 1.4rem;
+    }
     .table__oval {
         --table-w: min(600px, 92vw);
         border-width: 14px;
@@ -576,6 +579,13 @@ body {
 }
 
 @media (max-width: 600px) {
+    .trainer__title {
+        font-size: 1.15rem;
+    }
+    .trainer__stats-btn {
+        padding: 6px 12px;
+        font-size: 0.85rem;
+    }
     .table__oval {
         --table-w: 96vw;
         border-width: 10px;
