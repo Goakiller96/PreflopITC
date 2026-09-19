@@ -231,18 +231,24 @@ document.addEventListener('DOMContentLoaded', function() {
         rangePopup.classList.add('visible');
         rangePopup.style.display = 'block';
 
-        const pad = 12;
+        const pad = 8;
         let x = (typeof clientX === 'number' ? clientX : 100) + pad;
         let y = (typeof clientY === 'number' ? clientY : 100) + pad;
 
         requestAnimationFrame(function () {
             const rect = rangePopup.getBoundingClientRect();
-            const w = rect.width || 500;
-            const h = rect.height || 380;
-            if (x + w > window.innerWidth - pad) x = window.innerWidth - w - pad;
-            if (y + h > window.innerHeight - pad) y = Math.max(pad, (clientY || 100) - h - pad);
-            if (x < pad) x = pad;
-            if (y < pad) y = pad;
+            const w = rect.width || Math.min(520, window.innerWidth - 16);
+            const h = rect.height || 300;
+            // На узких экранах центрируем
+            if (window.innerWidth < 600) {
+                x = Math.max(pad, (window.innerWidth - w) / 2);
+                y = Math.max(pad, Math.min(y, window.innerHeight - h - pad));
+            } else {
+                if (x + w > window.innerWidth - pad) x = window.innerWidth - w - pad;
+                if (y + h > window.innerHeight - pad) y = Math.max(pad, (clientY || 100) - h - pad);
+                if (x < pad) x = pad;
+                if (y < pad) y = pad;
+            }
             rangePopup.style.left = x + 'px';
             rangePopup.style.top = y + 'px';
         });
@@ -1019,7 +1025,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             
+            // Сброс статистики перед каждой новой тренировкой
+            stats = { total: 0, correct: 0 };
             sessionStats = { total: 0, correct: 0 };
+            saveStats();
+            updateGlobalStatsModal();
             updateSessionStatsUI();
             
             setupPanel.style.display = 'none';
