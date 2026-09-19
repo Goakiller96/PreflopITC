@@ -28,7 +28,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 50px;
+    margin-bottom: 10px;
     margin-top: 0;
     padding: 0 6px;
 }
@@ -323,6 +323,33 @@ body {
 
 .current-position {
     display: none;
+}
+
+
+/* Раскладка стола в режиме защиты BB: сдвиг на 1 против часовой, BB снизу по центру */
+.table__oval.table--defend-bb .position-wrapper--ep   { top: auto; right: auto; bottom: 12%; left: 5%; transform: none; }
+.table__oval.table--defend-bb .position-wrapper--mp   { top: 14%; left: 4%; right: auto; bottom: auto; transform: none; }
+.table__oval.table--defend-bb .position-wrapper--co   { top: -7%; left: 50%; right: auto; bottom: auto; transform: translateX(-50%); }
+.table__oval.table--defend-bb .position-wrapper--btn  { top: 14%; right: 4%; left: auto; bottom: auto; transform: none; }
+.table__oval.table--defend-bb .position-wrapper--sb   { top: auto; left: auto; bottom: 12%; right: 5%; transform: none; }
+.table__oval.table--defend-bb .position-wrapper--bb   { top: auto; right: auto; bottom: -7%; left: 50%; transform: translateX(-50%); }
+
+@media (max-width: 900px) {
+    .table__oval.table--defend-bb .position-wrapper--ep   { bottom: 8%; left: 2%; top: auto; right: auto; transform: none; }
+    .table__oval.table--defend-bb .position-wrapper--mp   { top: 10%; left: 2%; bottom: auto; right: auto; transform: none; }
+    .table__oval.table--defend-bb .position-wrapper--co   { top: -9%; left: 50%; transform: translateX(-50%); bottom: auto; right: auto; }
+    .table__oval.table--defend-bb .position-wrapper--btn  { top: 10%; right: 2%; bottom: auto; left: auto; transform: none; }
+    .table__oval.table--defend-bb .position-wrapper--sb   { bottom: 8%; right: 2%; top: auto; left: auto; transform: none; }
+    .table__oval.table--defend-bb .position-wrapper--bb   { bottom: -9%; left: 50%; transform: translateX(-50%); top: auto; right: auto; }
+}
+
+@media (max-width: 600px) {
+    .table__oval.table--defend-bb .position-wrapper--ep   { bottom: 6%; left: 0%; top: auto; right: auto; transform: none; }
+    .table__oval.table--defend-bb .position-wrapper--mp   { top: 8%; left: 0%; bottom: auto; right: auto; transform: none; }
+    .table__oval.table--defend-bb .position-wrapper--co   { top: -10%; left: 50%; transform: translateX(-50%); bottom: auto; right: auto; }
+    .table__oval.table--defend-bb .position-wrapper--btn  { top: 8%; right: 0%; bottom: auto; left: auto; transform: none; }
+    .table__oval.table--defend-bb .position-wrapper--sb   { bottom: 6%; right: 0%; top: auto; left: auto; transform: none; }
+    .table__oval.table--defend-bb .position-wrapper--bb   { bottom: -10%; left: 50%; transform: translateX(-50%); top: auto; right: auto; }
 }
 
 /* Situation / actions / result */

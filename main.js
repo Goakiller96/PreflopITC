@@ -795,6 +795,16 @@ document.addEventListener('DOMContentLoaded', function() {
         if (modes) modes.style.display = visible ? '' : 'none';
     }
 
+    function updateTableLayoutForMode() {
+        const oval = document.querySelector('.table__oval');
+        if (!oval) return;
+        if (currentMode === 'defend_bb') {
+            oval.classList.add('table--defend-bb');
+        } else {
+            oval.classList.remove('table--defend-bb');
+        }
+    }
+
     function resetToSetupScreen() {
         if (isErrorMode) {
             isErrorMode = false;
@@ -808,6 +818,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (setupPanel) setupPanel.style.display = '';
         if (gamePanel) gamePanel.style.display = 'none';
         setModesVisible(true);
+        updateTableLayoutForMode();
         currentHand = null;
         currentHandResolved = false;
         if (resultPanel) {
@@ -961,8 +972,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (raiseSizeBlock) raiseSizeBlock.style.display = 'none';
                 
                 updatePositionsVisibility();
+                updateTableLayoutForMode();
                 
-                if (gamePanel && gamePanel.style.display === 'block') {
+                if (gamePanel && gamePanel.style.display === 'flex') {
+                    startNewHand();
+                } else if (gamePanel && gamePanel.style.display === 'block') {
                     startNewHand();
                 }
             });
@@ -1035,6 +1049,7 @@ document.addEventListener('DOMContentLoaded', function() {
             setupPanel.style.display = 'none';
             gamePanel.style.display = 'flex';
             setModesVisible(false);
+            updateTableLayoutForMode();
             startNewHand();
         });
     }
