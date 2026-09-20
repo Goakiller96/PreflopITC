@@ -139,8 +139,8 @@ document.addEventListener('DOMContentLoaded', function() {
             three: expandRange('AA-TT,AKs-AJs,KQs-KJs,QJs,AKo-AQo,KQo')
         },
         mp: {
-            call:  expandRange('99-22,ATs-A6s,A3s-A2s,KTs-K6s,QTs-Q9s,JTs-J9s,T9s-T8s,98s-97s,87s-86s,76s-75s,65s-64s,54s,AJo-ATo,KJo'),
-            three: expandRange('AA-TT,AKs-AJs,KQs-KJs,QJs,AKo-AQo,KQo')
+            call:  expandRange('88-22,A9s-A6s,A3s-A2s,K9s-K6s,Q9s,J9s,T9s-T8s,98s-97s,87s-86s,76s-75s,65s-64s,54s,AJo-ATo,KJo'),
+            three: expandRange('AA-TT,AKs-AJs,A5s-A4s,KQs-KJs,QJs,AKo-AQo,KQo')
         },
         co: {
             call:  expandRange('99-22,A9s-A6s,A3s-A2s,K9s-K2s,QTs-Q9s,JTs-J9s,T9s-T8s,98s-97s,87s-86s,76s-75s,65s-64s,54s-53s,43s,ATo,KJo-KTo,QJo'),
