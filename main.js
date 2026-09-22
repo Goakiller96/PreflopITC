@@ -38,6 +38,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let currentHand = null;
     let currentHandResolved = false;
     let currentMode = 'rfi';
+    let selectedModes = ['rfi']; // можно несколько режимов сразу
     let selectedRaiseSize = '3';
     let stats = { total: 0, correct: 0 };
     let sessionStats = { total: 0, correct: 0 };
@@ -143,7 +144,7 @@ document.addEventListener('DOMContentLoaded', function() {
             three: expandRange('AA-TT,AKs-AJs,A5s-A4s,KQs-KJs,QJs,AKo-AQo,KQo')
         },
         co: {
-            call:  expandRange('99-22,A9s-A6s,A3s-A2s,K9s-K2s,QTs-Q9s,JTs-J9s,T9s-T8s,98s-97s,87s-86s,76s-75s,65s-64s,54s-53s,43s,ATo,KJo-KTo,QJo'),
+            call:  expandRange('99-22,A9s-A6s,A3s-A2s,K9s-K2s,QTs-Q8s,JTs-J9s,T9s-T8s,98s-97s,87s-86s,76s-75s,65s-64s,54s-53s,43s,ATo,KJo-KTo,QJo'),
             three: expandRange('AA-TT,AKs-ATs,A5s-A4s,KQs-KTs,QJs,AKo-AJo,KQo')
         },
         btn: {
@@ -447,18 +448,18 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if (!bbCheckbox) return;
         
-        if (currentMode === 'rfi' || currentMode === 'defend_bb') {
+        // BB в выборе позиций нужен только если выбран режим 3bet
+        const needBB = selectedModes.includes('3bet');
+        if (!needBB) {
             if (bbLabel) bbLabel.style.display = 'none';
-            if (bbCheckbox.checked) {
-                bbCheckbox.checked = false;
-            }
+            if (bbCheckbox.checked) bbCheckbox.checked = false;
         } else {
             if (bbLabel) bbLabel.style.display = '';
         }
         
         const visibleCheckboxes = document.querySelectorAll('.pos-check:not([style*="display: none"])');
-        const allChecked = visibleCheckboxes.length === document.querySelectorAll('.pos-check:not([style*="display: none"]):checked').length;
-        if (allPositionsCheck) allPositionsCheck.checked = allChecked;
+        const checkedVisible = document.querySelectorAll('.pos-check:not([style*="display: none"]):checked');
+        if (allPositionsCheck) allPositionsCheck.checked = visibleCheckboxes.length > 0 && visibleCheckboxes.length === checkedVisible.length;
     }
 
     // ==================== ФУНКЦИИ РАБОТЫ С ОШИБКАМИ ====================
@@ -838,6 +839,13 @@ document.addEventListener('DOMContentLoaded', function() {
     function startNewHand() {
         if (selectedPositions.length === 0 && !isErrorMode) return;
         if (isErrorMode) return;
+        if (!selectedModes.length) {
+            selectedModes = ['rfi'];
+        }
+        
+        // Случайный режим из выбранных
+        currentMode = selectedModes[Math.floor(Math.random() * selectedModes.length)];
+        updateTableLayoutForMode();
         
         clearBetsOnTable();
         
@@ -965,18 +973,28 @@ document.addEventListener('DOMContentLoaded', function() {
                     showTemporaryMessage('Выход из режима работы над ошибками', '#ffd700', 1500);
                 }
                 
-                document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                currentMode = btn.dataset.mode;
+                const mode = btn.dataset.mode;
+                const isActive = btn.classList.contains('active');
+
+                if (isActive) {
+                    // Нельзя снять последний выбранный режим
+                    if (selectedModes.length <= 1) return;
+                    btn.classList.remove('active');
+                    selectedModes = selectedModes.filter(m => m !== mode);
+                } else {
+                    btn.classList.add('active');
+                    if (!selectedModes.includes(mode)) selectedModes.push(mode);
+                }
+
+                // currentMode — для раскладки стола на экране выбора
+                currentMode = selectedModes[0];
                 
                 if (raiseSizeBlock) raiseSizeBlock.style.display = 'none';
                 
                 updatePositionsVisibility();
                 updateTableLayoutForMode();
                 
-                if (gamePanel && gamePanel.style.display === 'flex') {
-                    startNewHand();
-                } else if (gamePanel && gamePanel.style.display === 'block') {
+                if (gamePanel && (gamePanel.style.display === 'flex' || gamePanel.style.display === 'block')) {
                     startNewHand();
                 }
             });
