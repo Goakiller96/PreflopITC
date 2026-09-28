@@ -701,6 +701,8 @@ document.addEventListener('DOMContentLoaded', function() {
             errorIndex: currentErrorIndex
         };
         currentHandResolved = false;
+
+        updateSeatLayout(error.position);
         
         if (currentPositionEl) currentPositionEl.innerHTML = '';
         
@@ -716,7 +718,7 @@ document.addEventListener('DOMContentLoaded', function() {
         let actionText = '';
         if (error.mode === 'defend_bb') {
             actionText = '';
-            showBetOnPosition(error.villainPos, null);
+            showBetOnPosition(error.villainPos, 3);
         } else if (error.mode === '3bet') {
             actionText = '🔄 ПОВТОР: ' + positionNames[error.villainPos] + ' открылся ' + error.raiseSize + 'bb';
             showBetOnPosition(error.villainPos, error.raiseSize);
@@ -904,13 +906,22 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function updateTableLayoutForMode() {
-        const oval = document.querySelector('.table__oval');
-        if (!oval) return;
-        if (currentMode === 'defend_bb') {
-            oval.classList.add('table--defend-bb');
-        } else {
-            oval.classList.remove('table--defend-bb');
-        }
+        // раскладка мест зависит от hero, не от режима
+    }
+
+    // Позиция героя всегда снизу по центру (seat-0), остальные по часовой
+    function updateSeatLayout(heroPos) {
+        const order = ['ep', 'mp', 'co', 'btn', 'sb', 'bb'];
+        const heroIdx = order.indexOf(heroPos);
+        if (heroIdx < 0) return;
+
+        order.forEach(function (pos, i) {
+            const seatIndex = (i - heroIdx + 6) % 6;
+            const el = document.querySelector('.position-wrapper--' + pos);
+            if (!el) return;
+            el.classList.remove('seat-0', 'seat-1', 'seat-2', 'seat-3', 'seat-4', 'seat-5');
+            el.classList.add('seat-' + seatIndex);
+        });
     }
 
     function resetToSetupScreen() {
@@ -980,7 +991,7 @@ document.addEventListener('DOMContentLoaded', function() {
             case 'defend_bb':
                 situation = generateDefendBBSituation();
                 context = { raiseSize: situation.raiseSize };
-                showBetOnPosition(situation.villainPos, null);
+                showBetOnPosition(situation.villainPos, 3);
                 break;
             default:
                 situation = generateRfiSituation();
@@ -994,6 +1005,8 @@ document.addEventListener('DOMContentLoaded', function() {
             situation: situation
         };
         currentHandResolved = false;
+
+        updateSeatLayout(situation.heroPos);
         
         if (currentPositionEl) currentPositionEl.innerHTML = '';
         
@@ -1221,6 +1234,7 @@ document.addEventListener('DOMContentLoaded', function() {
     loadStats();
     loadErrorsFromLocalStorage();
     updatePositionsVisibility();
+    updateSeatLayout('bb'); // стартовая раскладка: BB снизу по центру
     
     console.log('✅ Тренажёр готов! Новые диапазоны загружены.');
     console.log('RFI EP size:', rfiRanges.ep.size);

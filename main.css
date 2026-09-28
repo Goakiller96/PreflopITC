@@ -228,12 +228,27 @@ body {
     z-index: 2;
 }
 
-.position-wrapper--ep   { top: 14%; left: 4%; }
-.position-wrapper--mp   { top: -7%; left: 50%; transform: translateX(-50%); }
-.position-wrapper--co   { top: 14%; right: 4%; }
-.position-wrapper--btn  { bottom: 12%; right: 5%; }
-.position-wrapper--sb   { bottom: -7%; left: 50%; transform: translateX(-50%); }
-.position-wrapper--bb   { bottom: 12%; left: 5%; }
+/* Базовые координаты (до назначения seat) — не используются когда есть .seat-N */
+.position-wrapper--ep,
+.position-wrapper--mp,
+.position-wrapper--co,
+.position-wrapper--btn,
+.position-wrapper--sb,
+.position-wrapper--bb {
+    top: auto;
+    left: auto;
+    right: auto;
+    bottom: auto;
+    transform: none;
+}
+
+/* Слоты по кругу: seat-0 = всегда герой снизу по центру, далее по часовой */
+.position-wrapper.seat-0 { bottom: -7%; left: 50%; transform: translateX(-50%); }
+.position-wrapper.seat-1 { bottom: 12%; left: 5%; }
+.position-wrapper.seat-2 { top: 14%; left: 4%; }
+.position-wrapper.seat-3 { top: -7%; left: 50%; transform: translateX(-50%); }
+.position-wrapper.seat-4 { top: 14%; right: 4%; }
+.position-wrapper.seat-5 { bottom: 12%; right: 5%; }
 
 .position {
     width: 60px;
@@ -271,9 +286,6 @@ body {
 
 .bet-chip {
     position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    bottom: -28px;
     background: #c9a227;
     color: #1a1a1a;
     font-size: 0.75rem;
@@ -285,11 +297,46 @@ body {
     visibility: hidden;
     transition: all 0.2s;
     pointer-events: none;
+    z-index: 5;
 }
 
 .bet-chip.visible {
     opacity: 1;
     visibility: visible;
+}
+
+/* Плашка всегда внутри стола — со стороны к центру */
+/* seat-0 герой снизу → фишка сверху от кружка */
+.position-wrapper.seat-0 .bet-chip {
+    left: 50%;
+    top: -6px;
+    bottom: auto;
+    transform: translate(-50%, -100%);
+}
+/* seat-3 сверху → фишка снизу от кружка */
+.position-wrapper.seat-3 .bet-chip {
+    left: 50%;
+    bottom: -6px;
+    top: auto;
+    transform: translate(-50%, 100%);
+}
+/* seat-1, seat-2 слева → фишка правее (к центру) */
+.position-wrapper.seat-1 .bet-chip,
+.position-wrapper.seat-2 .bet-chip {
+    left: calc(100% + 6px);
+    top: 50%;
+    right: auto;
+    bottom: auto;
+    transform: translateY(-50%);
+}
+/* seat-4, seat-5 справа → фишка левее (к центру) */
+.position-wrapper.seat-4 .bet-chip,
+.position-wrapper.seat-5 .bet-chip {
+    right: calc(100% + 6px);
+    left: auto;
+    top: 50%;
+    bottom: auto;
+    transform: translateY(-50%);
 }
 
 .table__center {
@@ -334,32 +381,6 @@ body {
     display: none;
 }
 
-
-/* Раскладка стола в режиме защиты BB: сдвиг на 1 против часовой, BB снизу по центру */
-.table__oval.table--defend-bb .position-wrapper--ep   { top: auto; right: auto; bottom: 12%; left: 5%; transform: none; }
-.table__oval.table--defend-bb .position-wrapper--mp   { top: 14%; left: 4%; right: auto; bottom: auto; transform: none; }
-.table__oval.table--defend-bb .position-wrapper--co   { top: -7%; left: 50%; right: auto; bottom: auto; transform: translateX(-50%); }
-.table__oval.table--defend-bb .position-wrapper--btn  { top: 14%; right: 4%; left: auto; bottom: auto; transform: none; }
-.table__oval.table--defend-bb .position-wrapper--sb   { top: auto; left: auto; bottom: 12%; right: 5%; transform: none; }
-.table__oval.table--defend-bb .position-wrapper--bb   { top: auto; right: auto; bottom: -7%; left: 50%; transform: translateX(-50%); }
-
-@media (max-width: 900px) {
-    .table__oval.table--defend-bb .position-wrapper--ep   { bottom: 8%; left: 2%; top: auto; right: auto; transform: none; }
-    .table__oval.table--defend-bb .position-wrapper--mp   { top: 10%; left: 2%; bottom: auto; right: auto; transform: none; }
-    .table__oval.table--defend-bb .position-wrapper--co   { top: -9%; left: 50%; transform: translateX(-50%); bottom: auto; right: auto; }
-    .table__oval.table--defend-bb .position-wrapper--btn  { top: 10%; right: 2%; bottom: auto; left: auto; transform: none; }
-    .table__oval.table--defend-bb .position-wrapper--sb   { bottom: 8%; right: 2%; top: auto; left: auto; transform: none; }
-    .table__oval.table--defend-bb .position-wrapper--bb   { bottom: -9%; left: 50%; transform: translateX(-50%); top: auto; right: auto; }
-}
-
-@media (max-width: 600px) {
-    .table__oval.table--defend-bb .position-wrapper--ep   { bottom: 6%; left: 0%; top: auto; right: auto; transform: none; }
-    .table__oval.table--defend-bb .position-wrapper--mp   { top: 8%; left: 0%; bottom: auto; right: auto; transform: none; }
-    .table__oval.table--defend-bb .position-wrapper--co   { top: -10%; left: 50%; transform: translateX(-50%); bottom: auto; right: auto; }
-    .table__oval.table--defend-bb .position-wrapper--btn  { top: 8%; right: 0%; bottom: auto; left: auto; transform: none; }
-    .table__oval.table--defend-bb .position-wrapper--sb   { bottom: 6%; right: 0%; top: auto; left: auto; transform: none; }
-    .table__oval.table--defend-bb .position-wrapper--bb   { bottom: -10%; left: 50%; transform: translateX(-50%); top: auto; right: auto; }
-}
 
 /* Situation / actions / result */
 .situation-info {
@@ -598,12 +619,12 @@ body {
         height: 50px;
         font-size: 0.8rem;
     }
-    .position-wrapper--ep   { top: 10%; left: 2%; }
-    .position-wrapper--mp   { top: -9%; left: 50%; transform: translateX(-50%); }
-    .position-wrapper--co   { top: 10%; right: 2%; }
-    .position-wrapper--btn  { bottom: 8%; right: 2%; }
-    .position-wrapper--sb   { bottom: -9%; left: 50%; transform: translateX(-50%); }
-    .position-wrapper--bb   { bottom: 8%; left: 2%; }
+    .position-wrapper.seat-0 { bottom: -9%; left: 50%; transform: translateX(-50%); top: auto; right: auto; }
+    .position-wrapper.seat-1 { bottom: 8%; left: 2%; top: auto; right: auto; transform: none; }
+    .position-wrapper.seat-2 { top: 10%; left: 2%; bottom: auto; right: auto; transform: none; }
+    .position-wrapper.seat-3 { top: -9%; left: 50%; transform: translateX(-50%); bottom: auto; right: auto; }
+    .position-wrapper.seat-4 { top: 10%; right: 2%; bottom: auto; left: auto; transform: none; }
+    .position-wrapper.seat-5 { bottom: 8%; right: 2%; top: auto; left: auto; transform: none; }
     .card {
         width: 58px;
         height: 82px;
@@ -632,12 +653,12 @@ body {
         font-size: 0.65rem;
         border-width: 2px;
     }
-    .position-wrapper--ep   { top: 8%; left: 0%; }
-    .position-wrapper--mp   { top: -10%; left: 50%; transform: translateX(-50%); }
-    .position-wrapper--co   { top: 8%; right: 0%; }
-    .position-wrapper--btn  { bottom: 6%; right: 0%; }
-    .position-wrapper--sb   { bottom: -10%; left: 50%; transform: translateX(-50%); }
-    .position-wrapper--bb   { bottom: 6%; left: 0%; }
+    .position-wrapper.seat-0 { bottom: -10%; left: 50%; transform: translateX(-50%); top: auto; right: auto; }
+    .position-wrapper.seat-1 { bottom: 6%; left: 0%; top: auto; right: auto; transform: none; }
+    .position-wrapper.seat-2 { top: 8%; left: 0%; bottom: auto; right: auto; transform: none; }
+    .position-wrapper.seat-3 { top: -10%; left: 50%; transform: translateX(-50%); bottom: auto; right: auto; }
+    .position-wrapper.seat-4 { top: 8%; right: 0%; bottom: auto; left: auto; transform: none; }
+    .position-wrapper.seat-5 { bottom: 6%; right: 0%; top: auto; left: auto; transform: none; }
     .card {
         width: 48px;
         height: 68px;
