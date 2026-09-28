@@ -346,13 +346,34 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         currentVillainPos = null;
         hideRangePopup();
+        // блайнды оставляем / восстанавливаем отдельно
+        showBlindChips();
+    }
+
+    function showBlindChips() {
+        document.querySelectorAll('.blind-chip').forEach(function (el) {
+            el.classList.remove('visible');
+        });
+        // Показываем только когда идёт игра
+        if (!gamePanel || gamePanel.style.display === 'none') return;
+
+        const sbChip = document.querySelector('.position-wrapper--sb .blind-chip');
+        const bbChip = document.querySelector('.position-wrapper--bb .blind-chip');
+        if (sbChip) {
+            sbChip.textContent = '0.5';
+            sbChip.classList.add('visible');
+        }
+        if (bbChip) {
+            bbChip.textContent = '1';
+            bbChip.classList.add('visible');
+        }
     }
 
     function showBetOnPosition(position, betSize) {
         clearBetsOnTable();
         currentVillainPos = position;
 
-        // Фишка с размером — только если размер передан
+        // Фишка рейза — только если размер передан
         if (betSize !== null && betSize !== undefined && betSize !== '') {
             const betChip = document.querySelector('.position-wrapper--' + position + ' .bet-chip');
             if (betChip) {
@@ -365,6 +386,8 @@ document.addEventListener('DOMContentLoaded', function() {
         if (posElement) {
             posElement.classList.add('position--villain');
         }
+
+        showBlindChips();
     }
 
         // Наведение на ЛЮБУЮ позицию → показать её open-raise чарт
@@ -450,6 +473,13 @@ document.addEventListener('DOMContentLoaded', function() {
         return highRank + lowRank + (isSuited ? 's' : 'o');
     }
 
+    // Офсьют-руки с фолдом встречаются на 30% реже
+    function shouldSkipOffsuitFold(handCode, correctAction) {
+        if (correctAction !== 'fold') return false;
+        if (!handCode || handCode.length < 3 || handCode[handCode.length - 1] !== 'o') return false;
+        return Math.random() < 0.3;
+    }
+
     function getRandomCard() {
         return {
             rank: ranks[Math.floor(Math.random() * ranks.length)],
@@ -481,9 +511,14 @@ document.addEventListener('DOMContentLoaded', function() {
     function generateRfiSituation() {
         const rfiPositions = selectedPositions.filter(p => p !== 'bb');
         const heroPos = rfiPositions.length > 0 ? rfiPositions[Math.floor(Math.random() * rfiPositions.length)] : 'ep';
-        const cards = generateHand();
-        const handCode = getHandCode(cards[0], cards[1]);
-        const correctAction = rfiRanges[heroPos] && rfiRanges[heroPos].has(handCode) ? 'raise' : 'fold';
+        let cards, handCode, correctAction;
+        let attempts = 0;
+        do {
+            cards = generateHand();
+            handCode = getHandCode(cards[0], cards[1]);
+            correctAction = rfiRanges[heroPos] && rfiRanges[heroPos].has(handCode) ? 'raise' : 'fold';
+            attempts++;
+        } while (shouldSkipOffsuitFold(handCode, correctAction) && attempts < 30);
         return { cards, handCode, heroPos, correctAction };
     }
 
@@ -508,9 +543,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const villainPos = villainPool[Math.floor(Math.random() * villainPool.length)];
         const raiseSize = 3; // всегда 3bb у рейзера
-        const cards = generateHand();
-        const handCode = getHandCode(cards[0], cards[1]);
-        const correctAction = getThreebetAction(handCode, heroPos, villainPos);
+        let cards, handCode, correctAction;
+        let attempts = 0;
+        do {
+            cards = generateHand();
+            handCode = getHandCode(cards[0], cards[1]);
+            correctAction = getThreebetAction(handCode, heroPos, villainPos);
+            attempts++;
+        } while (shouldSkipOffsuitFold(handCode, correctAction) && attempts < 30);
 
         return { cards, handCode, heroPos, villainPos, raiseSize, correctAction };
     }
@@ -545,9 +585,14 @@ document.addEventListener('DOMContentLoaded', function() {
         // Фиксированный сайзинг для отображения фишки (на решение не влияет)
         const raiseSize = 3;
         
-        const cards = generateHand();
-        const handCode = getHandCode(cards[0], cards[1]);
-        const correctAction = getDefendBBAction(handCode, villainPos);
+        let cards, handCode, correctAction;
+        let attempts = 0;
+        do {
+            cards = generateHand();
+            handCode = getHandCode(cards[0], cards[1]);
+            correctAction = getDefendBBAction(handCode, villainPos);
+            attempts++;
+        } while (shouldSkipOffsuitFold(handCode, correctAction) && attempts < 30);
         
         return { cards, handCode, heroPos, villainPos, raiseSize, correctAction };
     }
@@ -703,6 +748,7 @@ document.addEventListener('DOMContentLoaded', function() {
         currentHandResolved = false;
 
         updateSeatLayout(error.position);
+        showBlindChips();
         
         if (currentPositionEl) currentPositionEl.innerHTML = '';
         
@@ -915,6 +961,11 @@ document.addEventListener('DOMContentLoaded', function() {
         const heroIdx = order.indexOf(heroPos);
         if (heroIdx < 0) return;
 
+        // Скрываем фишки до смены мест — без «перелёта»
+        document.querySelectorAll('.blind-chip, .bet-chip').forEach(function (el) {
+            el.classList.remove('visible');
+        });
+
         order.forEach(function (pos, i) {
             const seatIndex = (i - heroIdx + 6) % 6;
             const el = document.querySelector('.position-wrapper--' + pos);
@@ -1007,6 +1058,27 @@ document.addEventListener('DOMContentLoaded', function() {
         currentHandResolved = false;
 
         updateSeatLayout(situation.heroPos);
+        // Показать фишки уже на новых местах (без анимации перелёта)
+        showBlindChips();
+        if (situation.villainPos != null && situation.raiseSize != null && currentMode !== 'defend_bb') {
+            const betChip = document.querySelector('.position-wrapper--' + situation.villainPos + ' .bet-chip');
+            if (betChip && situation.raiseSize) {
+                betChip.textContent = situation.raiseSize + ' BB';
+                betChip.classList.add('visible');
+            }
+        } else if (currentMode === 'defend_bb' && situation.villainPos) {
+            const betChip = document.querySelector('.position-wrapper--' + situation.villainPos + ' .bet-chip');
+            if (betChip) {
+                betChip.textContent = '3 BB';
+                betChip.classList.add('visible');
+            }
+        } else if (currentMode === '3bet' && situation.villainPos) {
+            const betChip = document.querySelector('.position-wrapper--' + situation.villainPos + ' .bet-chip');
+            if (betChip) {
+                betChip.textContent = (situation.raiseSize || 3) + ' BB';
+                betChip.classList.add('visible');
+            }
+        }
         
         if (currentPositionEl) currentPositionEl.innerHTML = '';
         

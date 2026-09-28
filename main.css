@@ -295,7 +295,7 @@ body {
     white-space: nowrap;
     opacity: 0;
     visibility: hidden;
-    transition: all 0.2s;
+    transition: none;
     pointer-events: none;
     z-index: 5;
 }
@@ -338,6 +338,85 @@ body {
     bottom: auto;
     transform: translateY(-50%);
 }
+
+/* Блайнды: всегда на SB / BB, ближе к кружку; рейз — дальше к центру */
+.blind-chip {
+    position: absolute;
+    background: transparent;
+    color: #e0e0e0;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 10px;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    z-index: 4;
+    transition: none;
+}
+
+.blind-chip.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* seat-0 снизу: блайнд чуть выше кружка, рейз ещё выше */
+.position-wrapper.seat-0 .blind-chip {
+    left: 50%;
+    top: -4px;
+    transform: translate(-50%, -100%);
+}
+.position-wrapper.seat-0 .bet-chip {
+    left: 50%;
+    top: -28px;
+    transform: translate(-50%, -100%);
+}
+
+/* seat-3 сверху */
+.position-wrapper.seat-3 .blind-chip {
+    left: 50%;
+    bottom: -4px;
+    top: auto;
+    transform: translate(-50%, 100%);
+}
+.position-wrapper.seat-3 .bet-chip {
+    left: 50%;
+    bottom: -28px;
+    top: auto;
+    transform: translate(-50%, 100%);
+}
+
+/* слева seat-1,2: блайнд ближе, рейз правее */
+.position-wrapper.seat-1 .blind-chip,
+.position-wrapper.seat-2 .blind-chip {
+    left: calc(100% + 4px);
+    top: 50%;
+    transform: translateY(-50%);
+}
+.position-wrapper.seat-1 .bet-chip,
+.position-wrapper.seat-2 .bet-chip {
+    left: calc(100% + 4px);
+    top: calc(50% + 18px);
+    transform: translateY(-50%);
+}
+
+/* справа seat-4,5 */
+.position-wrapper.seat-4 .blind-chip,
+.position-wrapper.seat-5 .blind-chip {
+    right: calc(100% + 4px);
+    left: auto;
+    top: 50%;
+    transform: translateY(-50%);
+}
+.position-wrapper.seat-4 .bet-chip,
+.position-wrapper.seat-5 .bet-chip {
+    right: calc(100% + 4px);
+    left: auto;
+    top: calc(50% + 18px);
+    transform: translateY(-50%);
+}
+
 
 .table__center {
     position: absolute;
