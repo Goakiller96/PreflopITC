@@ -171,7 +171,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const threeBetRangesLate = {
         ep: expandRange('AA-TT,AKs-ATs,KQs-KTs,AKo-AQo,KQo'),
         mp: expandRange('AA-99,AKs-ATs,KQs-KTs,QJs-QTs,AKo-AQo,KQo'),
-        co: expandRange('AA-88,AKs-A9s,A5s-A4s,KQs-KTs,QJs-QTs,JTs,AKo-AJo,KQo')
+        co: expandRange('AA-88,AKs-A8s,A5s-A4s,KQs-KTs,QJs-QTs,JTs,AKo-AJo,KQo')
     };
     // Hero на SB
     const threeBetRangesSB = {
