@@ -130,7 +130,7 @@ document.addEventListener('DOMContentLoaded', function() {
         mp:  expandRange('AA-66,AKs-A2s,KQs-K8s,QJs-Q9s,JTs-J9s,T9s,AKo-ATo,KQo-KTo,QJo'),
         co:  expandRange('AA-55,AKs-A2s,KQs-K4s,QJs-Q8s,JTs-J8s,T9s-T8s,98s,AKo-A9o,KQo-KTo,QJo-QTo,JTo'),
         btn: expandRange('AA-22,AKs-A2s,KQs-K2s,QJs-Q5s,JTs-J6s,T9s-T6s,98s-96s,87s-86s,76s-75s,65s,54s,AKo-A4o,KQo-K9o,QJo-Q9o,JTo-J9o,T9o'),
-        sb:  expandRange('AA-22,AKs-A2s,KQs-K2s,QJs-Q2s,JTs-J5s,T9s-T6s,98s-96s,87s-85s,76s-74s,65s-64s,54s,AKo-A3o,KQo-K9o,QJo-Q9o,JTo-J9o,T9o')
+        sb:  expandRange('AA-22,AKs-A2s,KQs-K2s,QJs-Q2s,JTs-J5s,T9s-T6s,98s-96s,87s-85s,76s-75s,65s-64s,54s,AKo-A3o,KQo-K9o,QJo-Q9o,JTo-J9o,T9o')
     };
 
     // ==================== ДИАПАЗОНЫ ЗАЩИТЫ BB (НОВЫЕ) ====================
@@ -140,7 +140,7 @@ document.addEventListener('DOMContentLoaded', function() {
             three: expandRange('AA-TT,AKs-AJs,KQs-KJs,QJs,AKo-AQo,KQo')
         },
         mp: {
-            call:  expandRange('88-22,A9s-A6s,A3s-A2s,K9s-K6s,Q9s,J9s,T9s-T8s,98s-97s,87s-86s,76s-75s,65s-64s,54s,AJo-ATo,KJo'),
+            call:  expandRange('88-22,A9s-A6s,A3s-A2s,K9s-K6s,QTs-Q9s,J9s,T9s-T8s,98s-97s,87s-86s,76s-75s,65s-64s,54s,AJo-ATo,KJo'),
             three: expandRange('AA-TT,AKs-AJs,A5s-A4s,KQs-KJs,QJs,AKo-AQo,KQo')
         },
         co: {
