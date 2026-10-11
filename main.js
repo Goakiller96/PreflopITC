@@ -192,6 +192,124 @@ document.addEventListener('DOMContentLoaded', function() {
         return 'fold';
     }
 
+    // ==================== VS 3BET (защита после нашего open) ====================
+    // fourBet = 4bet/call + 4bet/fold; call = flat; иначе fold
+    const vs3betPercent = {
+        ep:  { mp: 7, co: 7, btn: 8, sb: 7, bb: 4 },
+        mp:  { co: 9, btn: 9, sb: 7, bb: 5 },
+        co:  { btn: 12, sb: 10, bb: 6 },
+        btn: { sb: 13, bb: 10 },
+        sb:  { bb: 14 }
+    };
+
+    const vs3betRanges = {
+        ep: {
+            mp: {
+                fourBetCall: expandRange('AA-QQ,AKs,AKo'),
+                fourBetFold: expandRange('AJs,KQs'),
+                call:        expandRange('JJ,AQs')
+            },
+            co: {
+                fourBetCall: expandRange('AA-QQ,AKs,AKo'),
+                fourBetFold: expandRange('AJs,KQs'),
+                call:        expandRange('JJ,AQs')
+            },
+            btn: {
+                fourBetCall: expandRange('AA-QQ,AKs,AKo'),
+                fourBetFold: expandRange('AJs,KQs'),
+                call:        expandRange('JJ,AQs')
+            },
+            sb: {
+                fourBetCall: expandRange('AA-KK,AKs,AKo'),
+                fourBetFold: expandRange(''),
+                call:        expandRange('QQ,AQs')
+            },
+            bb: {
+                fourBetCall: expandRange('AA-KK,AKs,AKo'),
+                fourBetFold: expandRange(''),
+                call:        expandRange('QQ')
+            }
+        },
+        mp: {
+            co: {
+                fourBetCall: expandRange('AA-QQ,AKs,AKo'),
+                fourBetFold: expandRange('AJs,KQs-KJs,KQo'),
+                call:        expandRange('JJ-TT,AQs')
+            },
+            btn: {
+                fourBetCall: expandRange('AA-QQ,AKs,AKo'),
+                fourBetFold: expandRange('AJs,KQs-KJs,KQo'),
+                call:        expandRange('JJ-TT,AQs')
+            },
+            sb: {
+                fourBetCall: expandRange('AA-KK,AKs,AKo'),
+                fourBetFold: expandRange(''),
+                call:        expandRange('QQ,AQs')
+            },
+            bb: {
+                fourBetCall: expandRange('AA-KK,AKs,AKo'),
+                fourBetFold: expandRange(''),
+                call:        expandRange('QQ')
+            }
+        },
+        co: {
+            btn: {
+                fourBetCall: expandRange('AA-KK,AKs,AKo'),
+                fourBetFold: expandRange('AJs,KQs-KJs,KQo'),
+                call:        expandRange('TT-99,AQs')
+            },
+            sb: {
+                fourBetCall: expandRange('AA-QQ,AKs,AKo'),
+                fourBetFold: expandRange('ATs,KJs-KTs,AQo'),
+                call:        expandRange('JJ-TT,AQs-AJs,KQs')
+            },
+            bb: {
+                fourBetCall: expandRange('AA-KK,AKs,AKo'),
+                fourBetFold: expandRange(''),
+                call:        expandRange('QQ,AQs')
+            }
+        },
+        btn: {
+            sb: {
+                fourBetCall: expandRange('AA-QQ,AKs,AKo'),
+                fourBetFold: expandRange('A9s,A5s,AQo-AJo,KQo'),
+                call:        expandRange('JJ-88,AQs-ATs,KQs-KJs')
+            },
+            bb: {
+                fourBetCall: expandRange('AA-QQ,AKs,AKo'),
+                fourBetFold: expandRange('ATs,KJs-KTs,AQo'),
+                call:        expandRange('JJ-TT,AQs-AJs,KQs')
+            }
+        },
+        sb: {
+            bb: {
+                fourBetCall: expandRange('AA-JJ,AKs,AKo'),
+                fourBetFold: expandRange('A7s,A5s-A4s,K9s,AQo-AJo,KQo'),
+                call:        expandRange('TT-66,AQs-A8s,KQs-KTs,QJs-QTs,JTs,T9s')
+            }
+        }
+    };
+
+    function getVs3betAction(handCode, heroPos, villainPos) {
+        const def = vs3betRanges[heroPos] && vs3betRanges[heroPos][villainPos];
+        if (!def) return 'fold';
+        if (def.fourBetCall && def.fourBetCall.has(handCode)) return '4bet_call';
+        if (def.fourBetFold && def.fourBetFold.has(handCode)) return '4bet_fold';
+        if (def.call && def.call.has(handCode)) return 'call';
+        return 'fold';
+    }
+
+    function getVs3betChartPath(heroPos, villainPos) {
+        const pct = vs3betPercent[heroPos] && vs3betPercent[heroPos][villainPos];
+        if (pct == null) return null;
+        const h = (positionNames[heroPos] || String(heroPos)).toUpperCase();
+        const v = (positionNames[villainPos] || String(villainPos)).toUpperCase();
+        // Имя файла: BTN_vs_BB_10%.jpeg
+        // Символ % в URL нужно кодировать как %25, иначе картинка не грузится
+        const fileName = h + '_vs_' + v + '_' + pct + '%.jpeg';
+        return 'IMG/vs_3BET/' + fileName.replace(/%/g, '%25');
+    }
+
     // ==================== ФУНКЦИИ ОТОБРАЖЕНИЯ ====================
     
         // ---------- Popup с изображением диапазона ----------
@@ -221,6 +339,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Чарт 3-bet: heroPos + villainPos → файл в IMG/3BET/
     function getThreebetChartPath(heroPos, villainPos) {
+        // heroPos здесь = кто 3-бетит, villainPos = против кого (наш open)
         if (heroPos === 'sb') {
             const map = {
                 ep:  'IMG/3BET/SB_vs_EP.jpeg',
@@ -234,6 +353,17 @@ document.addEventListener('DOMContentLoaded', function() {
             if (villainPos === 'ep') return 'IMG/3BET/MP_CO_BTN_vs_EP.jpeg';
             if (villainPos === 'mp') return 'IMG/3BET/CO_BTN_vs_MP.jpeg';
             if (villainPos === 'co') return 'IMG/3BET/BTN_vs_CO.jpeg';
+        }
+        // BB 3-бет (если добавлены файлы IMG/3BET/BB_vs_*.jpeg)
+        if (heroPos === 'bb') {
+            const map = {
+                ep:  'IMG/3BET/BB_vs_EP.jpeg',
+                mp:  'IMG/3BET/BB_vs_MP.jpeg',
+                co:  'IMG/3BET/BB_vs_CO.jpeg',
+                btn: 'IMG/3BET/BB_vs_BTN.jpeg',
+                sb:  'IMG/3BET/BB_vs_SB.jpeg'
+            };
+            return map[villainPos] || null;
         }
         return null;
     }
@@ -255,18 +385,45 @@ document.addEventListener('DOMContentLoaded', function() {
         // Режим 3-bet
         if (currentMode === '3bet' && currentVillainPos && heroPos) {
             if (position === heroPos) {
-                // Наведение на нашу позицию → чарт 3-bet
                 src = getThreebetChartPath(heroPos, currentVillainPos);
                 if (!src) return;
                 title = (positionNames[heroPos] || heroPos.toUpperCase()) +
                     ' 3-bet vs ' + (positionNames[currentVillainPos] || currentVillainPos.toUpperCase());
                 cacheKey = '3bet_' + heroPos + '_vs_' + currentVillainPos;
             } else if (position === currentVillainPos) {
-                // Наведение на рейзера → open raise
                 src = pfrImages[position];
                 if (!src) return;
                 title = (positionNames[position] || position.toUpperCase()) + ' Open Raise';
                 cacheKey = 'pfr_' + position;
+            } else if (pfrImages[position]) {
+                src = pfrImages[position];
+                title = (positionNames[position] || position.toUpperCase()) + ' Open Raise';
+                cacheKey = 'pfr_' + position;
+            } else {
+                return;
+            }
+        }
+        // Режим vs 3BET — мы открылись, получили 3-bet
+        else if (currentMode === 'vs3bet' && currentVillainPos && heroPos) {
+            if (position === heroPos) {
+                // Наша позиция → чарт защиты vs 3bet
+                src = getVs3betChartPath(heroPos, currentVillainPos);
+                if (!src) return;
+                const pct = vs3betPercent[heroPos] && vs3betPercent[heroPos][currentVillainPos];
+                title = (positionNames[heroPos] || heroPos.toUpperCase()) +
+                    ' vs 3bet ' + (positionNames[currentVillainPos] || currentVillainPos.toUpperCase()) +
+                    (pct != null ? ' (' + pct + '%)' : '');
+                cacheKey = 'vs3bet_' + heroPos + '_vs_' + currentVillainPos;
+            } else if (position === currentVillainPos) {
+                // 3-беттор → чарт его 3-bet диапазона vs наш open
+                src = getThreebetChartPath(currentVillainPos, heroPos);
+                if (!src) {
+                    console.warn('[Range] Нет чарта 3-беттора:', currentVillainPos, 'vs', heroPos);
+                    return;
+                }
+                title = (positionNames[currentVillainPos] || currentVillainPos.toUpperCase()) +
+                    ' 3-bet vs ' + (positionNames[heroPos] || heroPos.toUpperCase());
+                cacheKey = '3bet_villain_' + currentVillainPos + '_vs_' + heroPos;
             } else if (pfrImages[position]) {
                 src = pfrImages[position];
                 title = (positionNames[position] || position.toUpperCase()) + ' Open Raise';
@@ -403,8 +560,8 @@ document.addEventListener('DOMContentLoaded', function() {
             ? (currentHand.position || (currentHand.situation && currentHand.situation.heroPos))
             : null;
 
-        // 3-bet: можно наводить на hero и на рейзера
-        if (currentMode === '3bet' && heroPos && currentVillainPos) {
+        // 3-bet / vs3bet: hero и villain
+        if ((currentMode === '3bet' || currentMode === 'vs3bet') && heroPos && currentVillainPos) {
             if (pos === heroPos || pos === currentVillainPos || pfrImages[pos]) {
                 showRangePopup(pos, e.clientX, e.clientY);
             }
@@ -434,7 +591,7 @@ document.addEventListener('DOMContentLoaded', function() {
             ? (currentHand.position || (currentHand.situation && currentHand.situation.heroPos))
             : null;
 
-        if (currentMode === '3bet' && heroPos && currentVillainPos) {
+        if ((currentMode === '3bet' || currentMode === 'vs3bet') && heroPos && currentVillainPos) {
             if (pos === heroPos || pos === currentVillainPos || pfrImages[pos]) {
                 showRangePopup(pos, e.clientX, e.clientY);
             }
@@ -556,14 +713,34 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function generateVsThreebetSituation() {
-        const heroPos = selectedPositions[Math.floor(Math.random() * selectedPositions.length)];
-        const villainPos = selectedPositions.filter(p => p !== heroPos)[Math.floor(Math.random() * (selectedPositions.length - 1))];
-        const isIP = isInPosition(villainPos, heroPos);
-        const threebetSize = isIP ? 3 : 4;
-        const cards = generateHand();
-        const handCode = getHandCode(cards[0], cards[1]);
-        let correctAction = 'fold';
-        return { cards, handCode, heroPos, villainPos, threebetSize, correctAction };
+        // Hero — тот, кто открылся; villain — кто 3-бетит (позже по позиции)
+        const heroCandidates = selectedPositions.filter(function (p) {
+            return vs3betRanges[p] && Object.keys(vs3betRanges[p]).length > 0;
+        });
+        const heroPos = heroCandidates.length
+            ? heroCandidates[Math.floor(Math.random() * heroCandidates.length)]
+            : 'btn';
+
+        let villainPool = Object.keys(vs3betRanges[heroPos] || {});
+        // предпочитаем выбранные позиции
+        const preferred = villainPool.filter(function (v) { return selectedPositions.includes(v); });
+        if (preferred.length > 0) villainPool = preferred;
+
+        const villainPos = villainPool[Math.floor(Math.random() * villainPool.length)];
+        // 3-bet с SB/BB против свободных (EP/MP/CO/BTN) — 12bb; BB vs SB и остальные — 9bb
+        const vsFree = (heroPos !== 'sb' && heroPos !== 'bb');
+        const threebetSize = ((villainPos === 'sb' || villainPos === 'bb') && vsFree) ? 12 : 9;
+
+        let cards, handCode, correctAction;
+        let attempts = 0;
+        do {
+            cards = generateHand();
+            handCode = getHandCode(cards[0], cards[1]);
+            correctAction = getVs3betAction(handCode, heroPos, villainPos);
+            attempts++;
+        } while (shouldSkipOffsuitFold(handCode, correctAction) && attempts < 30);
+
+        return { cards, handCode, heroPos, villainPos, threebetSize, raiseSize: 3, correctAction };
     }
 
     function generateIsolateSituation() {
@@ -622,6 +799,7 @@ document.addEventListener('DOMContentLoaded', function() {
             position: handData.position,
             villainPos: handData.villainPos,
             raiseSize: handData.raiseSize,
+            threebetSize: handData.threebetSize,
             correctAction: handData.correctAction,
             mode: handData.mode,
             timestamp: Date.now()
@@ -768,6 +946,9 @@ document.addEventListener('DOMContentLoaded', function() {
         } else if (error.mode === '3bet') {
             actionText = '🔄 ПОВТОР: ' + positionNames[error.villainPos] + ' открылся ' + error.raiseSize + 'bb';
             showBetOnPosition(error.villainPos, error.raiseSize);
+        } else if (error.mode === 'vs3bet') {
+            actionText = '🔄 ПОВТОР: ' + positionNames[error.villainPos] + ' 3-bet';
+            showBetOnPosition(error.villainPos, error.threebetSize || error.raiseSize || 9);
         } else if (error.mode === 'rfi') {
             actionText = '';
             clearBetsOnTable();
@@ -824,7 +1005,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         const isCorrect = (selectedAction === error.correctAction);
-        const actionNames = { fold: 'ФОЛД', call: 'КОЛЛ', raise: 'РЕЙЗ', '3bet': '3БЕТ', '4bet': '4БЕТ', random: '50/50' };
+        const actionNames = { fold: 'ФОЛД', call: 'КОЛЛ', raise: 'РЕЙЗ', '3bet': '3БЕТ', '4bet': '4БЕТ', '4bet_call': '4BET/CALL', '4bet_fold': '4BET/FOLD', random: '50/50' };
         
         if (isCorrect) {
             // Удаляем текущую ошибку; индекс остаётся на том же месте (туда сдвинется следующая)
@@ -873,16 +1054,24 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!actionsPanel) return;
 
         const actionConfigs = {
-            rfi: { buttons: ['fold', 'raise'], names: { fold: '✗ FOLD', raise: '▲ RAISE' } },
-            '3bet': { buttons: ['fold', '3bet'], names: { fold: '✗ FOLD', '3bet': '▲ 3BET' } },
-            vs3bet: { buttons: ['fold', 'call', '4bet'], names: { fold: '✗ FOLD', call: '○ CALL', '4bet': '▲ 4BET' } },
-            isolate: { buttons: ['fold', 'call', 'raise'], names: { fold: '✗ FOLD', call: '○ CALL', raise: '▲ RAISE' } },
+            rfi: { buttons: ['fold', 'raise'], names: { fold: 'FOLD', raise: 'RAISE' } },
+            '3bet': { buttons: ['fold', '3bet'], names: { fold: 'FOLD', '3bet': '3BET' } },
+            vs3bet: {
+                buttons: ['4bet_call', '4bet_fold', 'call', 'fold'],
+                names: {
+                    '4bet_call': '4BET/CALL',
+                    '4bet_fold': '4BET/FOLD',
+                    call: 'CALL',
+                    fold: 'FOLD'
+                }
+            },
+            isolate: { buttons: ['fold', 'call', 'raise'], names: { fold: 'FOLD', call: 'CALL', raise: 'RAISE' } },
             defend_bb: { 
                 buttons: ['fold', 'call', 'raise'], 
                 names: { 
-                    fold: '✗ FOLD', 
-                    call: '○ CALL', 
-                    raise: '▲ 3BET' 
+                    fold: 'FOLD', 
+                    call: 'CALL', 
+                    raise: '3BET' 
                 } 
             }
         };
@@ -896,7 +1085,9 @@ document.addEventListener('DOMContentLoaded', function() {
             random: '<button class="action-btn action-btn--random" data-action="random">' + (config.names.random || '') + '</button>',
             raise: '<button class="action-btn action-btn--raise" data-action="raise">' + config.names.raise + '</button>',
             '3bet': '<button class="action-btn action-btn--3bet" data-action="3bet">' + config.names['3bet'] + '</button>',
-            '4bet': '<button class="action-btn action-btn--4bet" data-action="4bet">' + config.names['4bet'] + '</button>'
+            '4bet': '<button class="action-btn action-btn--4bet" data-action="4bet">' + (config.names['4bet'] || '4BET') + '</button>',
+            '4bet_call': '<button class="action-btn action-btn--4bet" data-action="4bet_call">' + (config.names['4bet_call'] || '4BET/CALL') + '</button>',
+            '4bet_fold': '<button class="action-btn action-btn--4bet-fold" data-action="4bet_fold">' + (config.names['4bet_fold'] || '4BET/FOLD') + '</button>'
         };
         
         let html = '';
@@ -1033,7 +1224,16 @@ document.addEventListener('DOMContentLoaded', function() {
             case 'vs3bet':
                 situation = generateVsThreebetSituation();
                 context = { threebetSize: situation.threebetSize };
+                // 3-беттор
                 showBetOnPosition(situation.villainPos, situation.threebetSize);
+                // наш open 3bb
+                (function () {
+                    const heroChip = document.querySelector('.position-wrapper--' + situation.heroPos + ' .bet-chip');
+                    if (heroChip) {
+                        heroChip.textContent = '3 BB';
+                        heroChip.classList.add('visible');
+                    }
+                })();
                 break;
             case 'isolate':
                 situation = generateIsolateSituation();
@@ -1060,24 +1260,41 @@ document.addEventListener('DOMContentLoaded', function() {
         updateSeatLayout(situation.heroPos);
         // Показать фишки уже на новых местах (без анимации перелёта)
         showBlindChips();
-        if (situation.villainPos != null && situation.raiseSize != null && currentMode !== 'defend_bb') {
-            const betChip = document.querySelector('.position-wrapper--' + situation.villainPos + ' .bet-chip');
-            if (betChip && situation.raiseSize) {
-                betChip.textContent = situation.raiseSize + ' BB';
-                betChip.classList.add('visible');
+        if (currentMode === 'vs3bet' && situation.villainPos) {
+            const villChip = document.querySelector('.position-wrapper--' + situation.villainPos + ' .bet-chip');
+            if (villChip) {
+                villChip.textContent = (situation.threebetSize || 9) + ' BB';
+                villChip.classList.add('visible');
             }
+            const heroChip = document.querySelector('.position-wrapper--' + situation.heroPos + ' .bet-chip');
+            if (heroChip) {
+                heroChip.textContent = '3 BB';
+                heroChip.classList.add('visible');
+            }
+            const villEl = document.querySelector('.position[data-pos="' + situation.villainPos + '"]');
+            if (villEl) villEl.classList.add('position--villain');
+            currentVillainPos = situation.villainPos;
         } else if (currentMode === 'defend_bb' && situation.villainPos) {
             const betChip = document.querySelector('.position-wrapper--' + situation.villainPos + ' .bet-chip');
             if (betChip) {
                 betChip.textContent = '3 BB';
                 betChip.classList.add('visible');
             }
+            currentVillainPos = situation.villainPos;
         } else if (currentMode === '3bet' && situation.villainPos) {
             const betChip = document.querySelector('.position-wrapper--' + situation.villainPos + ' .bet-chip');
             if (betChip) {
                 betChip.textContent = (situation.raiseSize || 3) + ' BB';
                 betChip.classList.add('visible');
             }
+            currentVillainPos = situation.villainPos;
+        } else if (situation.villainPos != null && situation.raiseSize != null) {
+            const betChip = document.querySelector('.position-wrapper--' + situation.villainPos + ' .bet-chip');
+            if (betChip && situation.raiseSize) {
+                betChip.textContent = situation.raiseSize + ' BB';
+                betChip.classList.add('visible');
+            }
+            currentVillainPos = situation.villainPos;
         }
         
         if (currentPositionEl) currentPositionEl.innerHTML = '';
@@ -1096,6 +1313,8 @@ document.addEventListener('DOMContentLoaded', function() {
         if (situationInfo) {
             if (currentMode === '3bet') {
                 situationInfo.innerHTML = positionNames[situation.villainPos] + ' открылся на ' + situation.raiseSize + 'bb';
+            } else if (currentMode === 'vs3bet') {
+                situationInfo.innerHTML = positionNames[situation.villainPos] + ' 3-bet ' + situation.threebetSize + 'bb';
             } else {
                 situationInfo.innerHTML = '';
             }
@@ -1126,6 +1345,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 position: currentHand.position,
                 villainPos: currentHand.situation ? currentHand.situation.villainPos : null,
                 raiseSize: currentHand.situation ? currentHand.situation.raiseSize : null,
+                threebetSize: currentHand.situation ? currentHand.situation.threebetSize : null,
                 correctAction: currentHand.correctAction,
                 mode: currentMode
             });
@@ -1137,7 +1357,7 @@ document.addEventListener('DOMContentLoaded', function() {
         updateGlobalStatsModal();
         updateSessionStatsUI();
         
-        const actionNames = { fold: 'ФОЛД', call: 'КОЛЛ', raise: 'РЕЙЗ', '3bet': '3БЕТ', '4bet': '4БЕТ', random: '50/50' };
+        const actionNames = { fold: 'ФОЛД', call: 'КОЛЛ', raise: 'РЕЙЗ', '3bet': '3БЕТ', '4bet': '4БЕТ', '4bet_call': '4BET/CALL', '4bet_fold': '4BET/FOLD', random: '50/50' };
         
         if (isCorrect) {
             resultMessage.innerHTML = '✅ ПРАВИЛЬНО!';

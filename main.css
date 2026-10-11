@@ -288,16 +288,17 @@ body {
     position: absolute;
     background: #c9a227;
     color: #1a1a1a;
-    font-size: 0.75rem;
+    font-size: clamp(0.55rem, 1.8vw, 0.75rem);
     font-weight: 700;
-    padding: 3px 10px;
-    border-radius: 12px;
+    padding: clamp(2px, 0.5vw, 3px) clamp(5px, 1.4vw, 10px);
+    border-radius: clamp(6px, 1.5vw, 12px);
     white-space: nowrap;
     opacity: 0;
     visibility: hidden;
     transition: none;
     pointer-events: none;
     z-index: 5;
+    line-height: 1.2;
 }
 
 .bet-chip.visible {
@@ -306,47 +307,14 @@ body {
 }
 
 /* Плашка всегда внутри стола — со стороны к центру */
-/* seat-0 герой снизу → фишка сверху от кружка */
-.position-wrapper.seat-0 .bet-chip {
-    left: 50%;
-    top: -6px;
-    bottom: auto;
-    transform: translate(-50%, -100%);
-}
-/* seat-3 сверху → фишка снизу от кружка */
-.position-wrapper.seat-3 .bet-chip {
-    left: 50%;
-    bottom: -6px;
-    top: auto;
-    transform: translate(-50%, 100%);
-}
-/* seat-1, seat-2 слева → фишка правее (к центру) */
-.position-wrapper.seat-1 .bet-chip,
-.position-wrapper.seat-2 .bet-chip {
-    left: calc(100% + 6px);
-    top: 50%;
-    right: auto;
-    bottom: auto;
-    transform: translateY(-50%);
-}
-/* seat-4, seat-5 справа → фишка левее (к центру) */
-.position-wrapper.seat-4 .bet-chip,
-.position-wrapper.seat-5 .bet-chip {
-    right: calc(100% + 6px);
-    left: auto;
-    top: 50%;
-    bottom: auto;
-    transform: translateY(-50%);
-}
-
-/* Блайнды: всегда на SB / BB, ближе к кружку; рейз — дальше к центру */
+/* Блайнды: ближе к кружку; рейз — чуть дальше к центру. Отступы адаптивные */
 .blind-chip {
     position: absolute;
     background: transparent;
     color: #e0e0e0;
-    font-size: 0.75rem;
+    font-size: clamp(0.55rem, 1.8vw, 0.75rem);
     font-weight: 700;
-    padding: 2px 6px;
+    padding: clamp(1px, 0.4vw, 2px) clamp(3px, 1vw, 6px);
     border-radius: 10px;
     white-space: nowrap;
     opacity: 0;
@@ -361,60 +329,97 @@ body {
     visibility: visible;
 }
 
-/* seat-0 снизу: блайнд чуть выше кружка, рейз ещё выше */
+/* seat-0 снизу */
 .position-wrapper.seat-0 .blind-chip {
     left: 50%;
-    top: -4px;
+    top: clamp(-2px, -0.4vw, -4px);
     transform: translate(-50%, -100%);
 }
 .position-wrapper.seat-0 .bet-chip {
     left: 50%;
-    top: -28px;
+    top: clamp(-14px, -3.5vw, -28px);
+    bottom: auto;
     transform: translate(-50%, -100%);
 }
 
 /* seat-3 сверху */
 .position-wrapper.seat-3 .blind-chip {
     left: 50%;
-    bottom: -4px;
+    bottom: clamp(-2px, -0.4vw, -4px);
     top: auto;
     transform: translate(-50%, 100%);
 }
 .position-wrapper.seat-3 .bet-chip {
     left: 50%;
-    bottom: -28px;
+    bottom: clamp(-14px, -3.5vw, -28px);
     top: auto;
     transform: translate(-50%, 100%);
 }
 
-/* слева seat-1,2: блайнд ближе, рейз правее */
+/* слева seat-1,2 */
 .position-wrapper.seat-1 .blind-chip,
 .position-wrapper.seat-2 .blind-chip {
-    left: calc(100% + 4px);
+    left: calc(100% + clamp(2px, 0.6vw, 4px));
     top: 50%;
     transform: translateY(-50%);
 }
 .position-wrapper.seat-1 .bet-chip,
 .position-wrapper.seat-2 .bet-chip {
-    left: calc(100% + 4px);
-    top: calc(50% + 18px);
+    left: calc(100% + clamp(2px, 0.6vw, 4px));
+    top: calc(50% + clamp(8px, 2.2vw, 18px));
+    right: auto;
+    bottom: auto;
     transform: translateY(-50%);
 }
 
 /* справа seat-4,5 */
 .position-wrapper.seat-4 .blind-chip,
 .position-wrapper.seat-5 .blind-chip {
-    right: calc(100% + 4px);
+    right: calc(100% + clamp(2px, 0.6vw, 4px));
     left: auto;
     top: 50%;
     transform: translateY(-50%);
 }
 .position-wrapper.seat-4 .bet-chip,
 .position-wrapper.seat-5 .bet-chip {
-    right: calc(100% + 4px);
+    right: calc(100% + clamp(2px, 0.6vw, 4px));
     left: auto;
-    top: calc(50% + 18px);
+    top: calc(50% + clamp(8px, 2.2vw, 18px));
+    bottom: auto;
     transform: translateY(-50%);
+}
+
+/* На узких экранах — ближе к кружку, но блайнд и рейз не пересекаются */
+@media (max-width: 900px) {
+    /* вертикальный стек: блайнд у кружка, рейз дальше к центру */
+    .position-wrapper.seat-0 .blind-chip { top: -3px; }
+    .position-wrapper.seat-0 .bet-chip { top: -22px; }
+    .position-wrapper.seat-3 .blind-chip { bottom: -3px; }
+    .position-wrapper.seat-3 .bet-chip { bottom: -22px; }
+    /* боковые: блайнд по центру, рейз смещён ниже */
+    .position-wrapper.seat-1 .blind-chip,
+    .position-wrapper.seat-2 .blind-chip { top: 35%; transform: translateY(-50%); }
+    .position-wrapper.seat-1 .bet-chip,
+    .position-wrapper.seat-2 .bet-chip { top: 70%; transform: translateY(-50%); left: calc(100% + 3px); }
+    .position-wrapper.seat-4 .blind-chip,
+    .position-wrapper.seat-5 .blind-chip { top: 35%; transform: translateY(-50%); }
+    .position-wrapper.seat-4 .bet-chip,
+    .position-wrapper.seat-5 .bet-chip { top: 70%; transform: translateY(-50%); right: calc(100% + 3px); }
+}
+
+@media (max-width: 600px) {
+    .position-wrapper.seat-0 .blind-chip { top: -2px; }
+    .position-wrapper.seat-0 .bet-chip { top: -18px; }
+    .position-wrapper.seat-3 .blind-chip { bottom: -2px; }
+    .position-wrapper.seat-3 .bet-chip { bottom: -18px; }
+    .position-wrapper.seat-1 .blind-chip,
+    .position-wrapper.seat-2 .blind-chip { left: calc(100% + 2px); top: 30%; transform: translateY(-50%); }
+    .position-wrapper.seat-1 .bet-chip,
+    .position-wrapper.seat-2 .bet-chip { left: calc(100% + 2px); top: 72%; transform: translateY(-50%); }
+    .position-wrapper.seat-4 .blind-chip,
+    .position-wrapper.seat-5 .blind-chip { right: calc(100% + 2px); top: 30%; transform: translateY(-50%); }
+    .position-wrapper.seat-4 .bet-chip,
+    .position-wrapper.seat-5 .bet-chip { right: calc(100% + 2px); top: 72%; transform: translateY(-50%); }
 }
 
 
@@ -473,29 +478,44 @@ body {
 .actions {
     display: flex;
     justify-content: center;
-    gap: 14px;
-    margin-top: 12px;
+    align-items: stretch;
+    gap: 10px;
+    margin: 12px auto 0;
     flex-wrap: wrap;
+    width: 100%;
+    max-width: 720px;
     z-index: 20;
     position: relative;
+    box-sizing: border-box;
+    padding: 0 8px;
 }
 
 .action-btn {
-    padding: 12px 32px;
-    font-size: 1.15rem;
+    flex: 1 1 140px;
+    min-width: 130px;
+    max-width: 170px;
+    min-height: 48px;
+    padding: 12px 14px;
+    font-size: clamp(0.85rem, 2.4vw, 1.1rem);
     font-weight: 700;
     border: none;
     border-radius: 10px;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: background 0.2s, transform 0.2s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    box-sizing: border-box;
+    white-space: nowrap;
 }
 
 .action-btn--fold {
-    background: #c42d2d;
+    background: #6b6b6b;
     color: white;
 }
 .action-btn--fold:hover {
-    background: #e63c3c;
+    background: #808080;
     transform: translateY(-2px);
 }
 
@@ -511,17 +531,32 @@ body {
 }
 
 .action-btn--call {
-    background: #2d6bc4;
-    color: white;
+    background: #00c97d;
+    color: #0f1b1a;
 }
 .action-btn--call:hover {
-    background: #3c7ee6;
+    background: #00ff9d;
     transform: translateY(-2px);
 }
 
+/* 4BET/CALL — красная */
 .action-btn--4bet {
-    background: #c47a2d;
+    background: #c42d2d;
     color: white;
+}
+.action-btn--4bet:hover {
+    background: #e63c3c;
+    transform: translateY(-2px);
+}
+
+/* 4BET/FOLD — бардовая */
+.action-btn--4bet-fold {
+    background: #7a1f2b;
+    color: white;
+}
+.action-btn--4bet-fold:hover {
+    background: #9a2838;
+    transform: translateY(-2px);
 }
 
 .result {
@@ -686,6 +721,15 @@ body {
 
 /* Adaptive */
 @media (max-width: 900px) {
+    .bet-chip {
+        font-size: 0.65rem;
+        padding: 2px 7px;
+        border-radius: 8px;
+    }
+    .blind-chip {
+        font-size: 0.65rem;
+        padding: 1px 4px;
+    }
     .trainer__title {
         font-size: 1.4rem;
     }
@@ -746,9 +790,17 @@ body {
     .card__suit {
         font-size: 1.5rem;
     }
+    .actions {
+        gap: 8px;
+        max-width: 100%;
+    }
     .action-btn {
-        padding: 10px 20px;
-        font-size: 1rem;
+        flex: 1 1 calc(50% - 8px);
+        min-width: calc(50% - 8px);
+        max-width: none;
+        min-height: 44px;
+        padding: 10px 8px;
+        font-size: 0.9rem;
     }
     .mode-btn {
         padding: 6px 12px;
