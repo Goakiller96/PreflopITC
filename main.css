@@ -519,13 +519,15 @@ body {
     transform: translateY(-2px);
 }
 
-/* RAISE (RFI) — зелёная */
+/* RAISE (RFI) — красная */
+.actions .action-btn--raise,
 .action-btn--raise {
-    background: #00c97d;
-    color: #0f1b1a;
+    background: #c42d2d !important;
+    color: white !important;
 }
+.actions .action-btn--raise:hover,
 .action-btn--raise:hover {
-    background: #00ff9d;
+    background: #e63c3c !important;
     transform: translateY(-2px);
 }
 

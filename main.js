@@ -1100,8 +1100,8 @@ document.addEventListener('DOMContentLoaded', function() {
             fold: '<button class="action-btn action-btn--fold" data-action="fold">' + config.names.fold + '</button>',
             call: '<button class="action-btn action-btn--call" data-action="call">' + config.names.call + '</button>',
             random: '<button class="action-btn action-btn--random" data-action="random">' + (config.names.random || '') + '</button>',
-            // В защите BB кнопка RAISE подписана 3BET — красный стиль
-            raise: (mode === 'defend_bb')
+            // RFI RAISE и защита BB (подпись 3BET) — красный стиль
+            raise: (mode === 'defend_bb' || mode === 'rfi')
                 ? '<button class="action-btn action-btn--3bet" data-action="raise">' + config.names.raise + '</button>'
                 : '<button class="action-btn action-btn--raise" data-action="raise">' + config.names.raise + '</button>',
             '3bet': '<button class="action-btn action-btn--3bet" data-action="3bet">' + config.names['3bet'] + '</button>',
