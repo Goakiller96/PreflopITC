@@ -715,7 +715,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function generateVsThreebetSituation() {
         // Hero — тот, кто открылся; villain — кто 3-бетит (позже по позиции)
         const heroCandidates = selectedPositions.filter(function (p) {
-            return vs3betRanges[p] && Object.keys(vs3betRanges[p]).length > 0;
+            return vs3betRanges[p] && Object.keys(vs3betRanges[p]).length > 0 && rfiRanges[p];
         });
         const heroPos = heroCandidates.length
             ? heroCandidates[Math.floor(Math.random() * heroCandidates.length)]
@@ -731,14 +731,32 @@ document.addEventListener('DOMContentLoaded', function() {
         const vsFree = (heroPos !== 'sb' && heroPos !== 'bb');
         const threebetSize = ((villainPos === 'sb' || villainPos === 'bb') && vsFree) ? 12 : 9;
 
+        // Только руки из open-raise диапазона hero (иначе ситуация невозможна)
+        const openRange = rfiRanges[heroPos];
+        const openHands = openRange ? Array.from(openRange) : [];
         let cards, handCode, correctAction;
         let attempts = 0;
-        do {
-            cards = generateHand();
-            handCode = getHandCode(cards[0], cards[1]);
-            correctAction = getVs3betAction(handCode, heroPos, villainPos);
-            attempts++;
-        } while (shouldSkipOffsuitFold(handCode, correctAction) && attempts < 30);
+
+        if (openHands.length > 0) {
+            do {
+                handCode = openHands[Math.floor(Math.random() * openHands.length)];
+                cards = generateHandFromCode(handCode);
+                correctAction = getVs3betAction(handCode, heroPos, villainPos);
+                attempts++;
+            } while (shouldSkipOffsuitFold(handCode, correctAction) && attempts < 40);
+        } else {
+            // fallback — не должны сюда попадать
+            do {
+                cards = generateHand();
+                handCode = getHandCode(cards[0], cards[1]);
+                correctAction = getVs3betAction(handCode, heroPos, villainPos);
+                attempts++;
+            } while (
+                (!(rfiRanges[heroPos] && rfiRanges[heroPos].has(handCode)) ||
+                 shouldSkipOffsuitFold(handCode, correctAction)) &&
+                attempts < 80
+            );
+        }
 
         return { cards, handCode, heroPos, villainPos, threebetSize, raiseSize: 3, correctAction };
     }
