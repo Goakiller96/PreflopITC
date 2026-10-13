@@ -329,15 +329,15 @@ body {
     visibility: visible;
 }
 
-/* seat-0 снизу */
+/* seat-0 снизу: блайнд у кружка, рейз выше с зазором */
 .position-wrapper.seat-0 .blind-chip {
     left: 50%;
-    top: clamp(-2px, -0.4vw, -4px);
+    top: -4px;
     transform: translate(-50%, -100%);
 }
 .position-wrapper.seat-0 .bet-chip {
     left: 50%;
-    top: clamp(-14px, -3.5vw, -28px);
+    top: -38px;
     bottom: auto;
     transform: translate(-50%, -100%);
 }
@@ -345,15 +345,32 @@ body {
 /* seat-3 сверху */
 .position-wrapper.seat-3 .blind-chip {
     left: 50%;
-    bottom: clamp(-2px, -0.4vw, -4px);
+    bottom: -4px;
     top: auto;
     transform: translate(-50%, 100%);
 }
 .position-wrapper.seat-3 .bet-chip {
     left: 50%;
-    bottom: clamp(-14px, -3.5vw, -28px);
+    bottom: -38px;
     top: auto;
     transform: translate(-50%, 100%);
+}
+
+/* Десктоп ≥1024: ещё больший зазор, чтобы рейз не перекрывал блайнд */
+@media (min-width: 1024px) {
+    .position-wrapper.seat-0 .blind-chip { top: -6px; }
+    .position-wrapper.seat-0 .bet-chip { top: -44px; }
+    .position-wrapper.seat-3 .blind-chip { bottom: -6px; }
+    .position-wrapper.seat-3 .bet-chip { bottom: -44px; }
+
+    .position-wrapper.seat-1 .blind-chip,
+    .position-wrapper.seat-2 .blind-chip { top: 32%; }
+    .position-wrapper.seat-1 .bet-chip,
+    .position-wrapper.seat-2 .bet-chip { top: 72%; }
+    .position-wrapper.seat-4 .blind-chip,
+    .position-wrapper.seat-5 .blind-chip { top: 32%; }
+    .position-wrapper.seat-4 .bet-chip,
+    .position-wrapper.seat-5 .bet-chip { top: 72%; }
 }
 
 /* слева seat-1,2 */
