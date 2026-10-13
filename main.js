@@ -630,11 +630,10 @@ document.addEventListener('DOMContentLoaded', function() {
         return highRank + lowRank + (isSuited ? 's' : 'o');
     }
 
-    // Офсьют-руки с фолдом встречаются на 30% реже
-    function shouldSkipOffsuitFold(handCode, correctAction) {
+    // Руки из диапазона фолда встречаются на 50% реже (во всех режимах)
+    function shouldSkipFoldHand(handCode, correctAction) {
         if (correctAction !== 'fold') return false;
-        if (!handCode || handCode.length < 3 || handCode[handCode.length - 1] !== 'o') return false;
-        return Math.random() < 0.3;
+        return Math.random() < 0.5;
     }
 
     function getRandomCard() {
@@ -675,7 +674,7 @@ document.addEventListener('DOMContentLoaded', function() {
             handCode = getHandCode(cards[0], cards[1]);
             correctAction = rfiRanges[heroPos] && rfiRanges[heroPos].has(handCode) ? 'raise' : 'fold';
             attempts++;
-        } while (shouldSkipOffsuitFold(handCode, correctAction) && attempts < 30);
+        } while (shouldSkipFoldHand(handCode, correctAction) && attempts < 30);
         return { cards, handCode, heroPos, correctAction };
     }
 
@@ -707,7 +706,7 @@ document.addEventListener('DOMContentLoaded', function() {
             handCode = getHandCode(cards[0], cards[1]);
             correctAction = getThreebetAction(handCode, heroPos, villainPos);
             attempts++;
-        } while (shouldSkipOffsuitFold(handCode, correctAction) && attempts < 30);
+        } while (shouldSkipFoldHand(handCode, correctAction) && attempts < 30);
 
         return { cards, handCode, heroPos, villainPos, raiseSize, correctAction };
     }
@@ -743,7 +742,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 cards = generateHandFromCode(handCode);
                 correctAction = getVs3betAction(handCode, heroPos, villainPos);
                 attempts++;
-            } while (shouldSkipOffsuitFold(handCode, correctAction) && attempts < 40);
+            } while (shouldSkipFoldHand(handCode, correctAction) && attempts < 40);
         } else {
             // fallback — не должны сюда попадать
             do {
@@ -753,7 +752,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 attempts++;
             } while (
                 (!(rfiRanges[heroPos] && rfiRanges[heroPos].has(handCode)) ||
-                 shouldSkipOffsuitFold(handCode, correctAction)) &&
+                 shouldSkipFoldHand(handCode, correctAction)) &&
                 attempts < 80
             );
         }
@@ -787,7 +786,7 @@ document.addEventListener('DOMContentLoaded', function() {
             handCode = getHandCode(cards[0], cards[1]);
             correctAction = getDefendBBAction(handCode, villainPos);
             attempts++;
-        } while (shouldSkipOffsuitFold(handCode, correctAction) && attempts < 30);
+        } while (shouldSkipFoldHand(handCode, correctAction) && attempts < 30);
         
         return { cards, handCode, heroPos, villainPos, raiseSize, correctAction };
     }
