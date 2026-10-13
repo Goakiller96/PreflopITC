@@ -519,17 +519,27 @@ body {
     transform: translateY(-2px);
 }
 
-.action-btn--raise,
-.action-btn--3bet {
+/* RAISE (RFI) — зелёная */
+.action-btn--raise {
     background: #00c97d;
     color: #0f1b1a;
 }
-.action-btn--raise:hover,
-.action-btn--3bet:hover {
+.action-btn--raise:hover {
     background: #00ff9d;
     transform: translateY(-2px);
 }
 
+/* 3BET (все режимы кроме vs 3BET) — красная */
+.action-btn--3bet {
+    background: #c42d2d;
+    color: white;
+}
+.action-btn--3bet:hover {
+    background: #e63c3c;
+    transform: translateY(-2px);
+}
+
+/* CALL — зелёная (в т.ч. в vs 3BET) */
 .action-btn--call {
     background: #00c97d;
     color: #0f1b1a;
