@@ -329,114 +329,331 @@ body {
     visibility: visible;
 }
 
-/* seat-0 снизу: блайнд у кружка, рейз выше с зазором */
+/* seat-0 / seat-3: тот же зазор плашки, что у боковых (--side-bet-gap) */
+.position-wrapper.seat-0,
+.position-wrapper.seat-3 {
+    --side-bet-gap: 4px;
+    --side-bet-gap-blind: 18px;
+}
+
+/* seat-0 снизу: рейз сверху позиции */
 .position-wrapper.seat-0 .blind-chip {
     left: 50%;
-    top: -4px;
-    transform: translate(-50%, -100%);
+    top: 0;
+    transform: translate(-50%, calc(-100% - 2px));
 }
 .position-wrapper.seat-0 .bet-chip {
     left: 50%;
-    top: -38px;
+    top: 0;
     bottom: auto;
-    transform: translate(-50%, -100%);
+    transform: translate(-50%, calc(-100% - var(--side-bet-gap)));
+}
+.position-wrapper--sb.seat-0 .bet-chip,
+.position-wrapper--bb.seat-0 .bet-chip {
+    transform: translate(-50%, calc(-100% - var(--side-bet-gap-blind)));
 }
 
-/* seat-3 сверху */
+/* seat-3 сверху: рейз снизу позиции */
 .position-wrapper.seat-3 .blind-chip {
     left: 50%;
-    bottom: -4px;
+    bottom: 0;
     top: auto;
-    transform: translate(-50%, 100%);
+    transform: translate(-50%, calc(100% + 2px));
 }
 .position-wrapper.seat-3 .bet-chip {
     left: 50%;
-    bottom: -38px;
+    bottom: 0;
     top: auto;
-    transform: translate(-50%, 100%);
+    transform: translate(-50%, calc(100% + var(--side-bet-gap)));
+}
+.position-wrapper--sb.seat-3 .bet-chip,
+.position-wrapper--bb.seat-3 .bet-chip {
+    transform: translate(-50%, calc(100% + var(--side-bet-gap-blind)));
 }
 
-/* Десктоп ≥1024: ещё больший зазор, чтобы рейз не перекрывал блайнд */
-@media (min-width: 1024px) {
-    .position-wrapper.seat-0 .blind-chip { top: -6px; }
-    .position-wrapper.seat-0 .bet-chip { top: -44px; }
-    .position-wrapper.seat-3 .blind-chip { bottom: -6px; }
-    .position-wrapper.seat-3 .bet-chip { bottom: -44px; }
+/*
+ * Боковые места:
+ * - блайнд под 45° к центру стола
+ * - рейз: у нижних (seat-1,5) — сверху позиции; у верхних (seat-2,4) — снизу позиции
+ */
 
-    .position-wrapper.seat-1 .blind-chip,
-    .position-wrapper.seat-2 .blind-chip { top: 32%; }
-    .position-wrapper.seat-1 .bet-chip,
-    .position-wrapper.seat-2 .bet-chip { top: 72%; }
-    .position-wrapper.seat-4 .blind-chip,
-    .position-wrapper.seat-5 .blind-chip { top: 32%; }
-    .position-wrapper.seat-4 .bet-chip,
-    .position-wrapper.seat-5 .bet-chip { top: 72%; }
+/*
+ * Боковые: одинаковый зазор плашки рейза
+ * --side-bet-gap: расстояние от края позиции до плашки
+ */
+.position-wrapper.seat-1,
+.position-wrapper.seat-2,
+.position-wrapper.seat-4,
+.position-wrapper.seat-5 {
+    --side-bet-gap: 4px;
 }
 
-/* слева seat-1,2 */
-.position-wrapper.seat-1 .blind-chip,
-.position-wrapper.seat-2 .blind-chip {
-    left: calc(100% + clamp(2px, 0.6vw, 4px));
-    top: 50%;
-    transform: translateY(-50%);
-}
-.position-wrapper.seat-1 .bet-chip,
-.position-wrapper.seat-2 .bet-chip {
-    left: calc(100% + clamp(2px, 0.6vw, 4px));
-    top: calc(50% + clamp(8px, 2.2vw, 18px));
+/* seat-1 низ-лево: блайнд 45° (вверх-вправо), рейз СВЕРХУ */
+.position-wrapper.seat-1 .blind-chip {
+    left: calc(100% + 4px);
+    top: calc(50% - 12px);
     right: auto;
     bottom: auto;
-    transform: translateY(-50%);
+    transform: none;
 }
-
-/* справа seat-4,5 */
-.position-wrapper.seat-4 .blind-chip,
-.position-wrapper.seat-5 .blind-chip {
-    right: calc(100% + clamp(2px, 0.6vw, 4px));
-    left: auto;
-    top: 50%;
-    transform: translateY(-50%);
-}
-.position-wrapper.seat-4 .bet-chip,
-.position-wrapper.seat-5 .bet-chip {
-    right: calc(100% + clamp(2px, 0.6vw, 4px));
-    left: auto;
-    top: calc(50% + clamp(8px, 2.2vw, 18px));
+.position-wrapper.seat-1 .bet-chip {
+    left: 50%;
+    top: 0;
+    right: auto;
     bottom: auto;
-    transform: translateY(-50%);
+    transform: translate(-50%, calc(-100% - var(--side-bet-gap)));
 }
 
-/* На узких экранах — ближе к кружку, но блайнд и рейз не пересекаются */
+/* seat-2 верх-лево: блайнд 45° (вниз-вправо), рейз СНИЗУ */
+.position-wrapper.seat-2 .blind-chip {
+    left: calc(100% + 4px);
+    top: calc(50% + 6px);
+    right: auto;
+    bottom: auto;
+    transform: none;
+}
+.position-wrapper.seat-2 .bet-chip {
+    left: 50%;
+    top: auto;
+    right: auto;
+    bottom: 0;
+    transform: translate(-50%, calc(100% + var(--side-bet-gap)));
+}
+
+/* seat-4 верх-право: блайнд 45° (вниз-влево), рейз СНИЗУ */
+.position-wrapper.seat-4 .blind-chip {
+    right: calc(100% + 4px);
+    left: auto;
+    top: calc(50% + 6px);
+    bottom: auto;
+    transform: none;
+}
+.position-wrapper.seat-4 .bet-chip {
+    left: 50%;
+    right: auto;
+    top: auto;
+    bottom: 0;
+    transform: translate(-50%, calc(100% + var(--side-bet-gap)));
+}
+
+/* seat-5 низ-право: блайнд 45° (вверх-влево), рейз СВЕРХУ */
+.position-wrapper.seat-5 .blind-chip {
+    right: calc(100% + 4px);
+    left: auto;
+    top: calc(50% - 12px);
+    bottom: auto;
+    transform: none;
+}
+.position-wrapper.seat-5 .bet-chip {
+    left: 50%;
+    right: auto;
+    top: 0;
+    bottom: auto;
+    transform: translate(-50%, calc(-100% - var(--side-bet-gap)));
+}
+
+/* ≥1024 */
+@media (min-width: 1024px) {
+    .position-wrapper.seat-0,
+    .position-wrapper.seat-3 {
+        --side-bet-gap: 4px;
+        --side-bet-gap-blind: 18px;
+    }
+    .position-wrapper.seat-0 .blind-chip {
+        top: 0;
+        transform: translate(-50%, calc(-100% - 2px));
+    }
+    .position-wrapper.seat-3 .blind-chip {
+        bottom: 0;
+        transform: translate(-50%, calc(100% + 2px));
+    }
+
+    .position-wrapper.seat-1,
+    .position-wrapper.seat-2,
+    .position-wrapper.seat-4,
+    .position-wrapper.seat-5 {
+        --side-bet-gap: 4px;
+    }
+    .position-wrapper.seat-1 .blind-chip {
+        left: calc(100% + 5px);
+        top: calc(50% - 14px);
+    }
+    .position-wrapper.seat-2 .blind-chip {
+        left: calc(100% + 5px);
+        top: calc(50% + 7px);
+    }
+    .position-wrapper.seat-4 .blind-chip {
+        right: calc(100% + 5px);
+        top: calc(50% + 7px);
+    }
+    .position-wrapper.seat-5 .blind-chip {
+        right: calc(100% + 5px);
+        top: calc(50% - 14px);
+    }
+}
+
 @media (max-width: 900px) {
-    /* вертикальный стек: блайнд у кружка, рейз дальше к центру */
-    .position-wrapper.seat-0 .blind-chip { top: -3px; }
-    .position-wrapper.seat-0 .bet-chip { top: -22px; }
-    .position-wrapper.seat-3 .blind-chip { bottom: -3px; }
-    .position-wrapper.seat-3 .bet-chip { bottom: -22px; }
-    /* боковые: блайнд по центру, рейз смещён ниже */
-    .position-wrapper.seat-1 .blind-chip,
-    .position-wrapper.seat-2 .blind-chip { top: 35%; transform: translateY(-50%); }
-    .position-wrapper.seat-1 .bet-chip,
-    .position-wrapper.seat-2 .bet-chip { top: 70%; transform: translateY(-50%); left: calc(100% + 3px); }
-    .position-wrapper.seat-4 .blind-chip,
-    .position-wrapper.seat-5 .blind-chip { top: 35%; transform: translateY(-50%); }
-    .position-wrapper.seat-4 .bet-chip,
-    .position-wrapper.seat-5 .bet-chip { top: 70%; transform: translateY(-50%); right: calc(100% + 3px); }
+    .position-wrapper.seat-0,
+    .position-wrapper.seat-3 {
+        --side-bet-gap: 3px;
+        --side-bet-gap-blind: 14px;
+    }
+    .position-wrapper.seat-0 .blind-chip {
+        top: 0;
+        transform: translate(-50%, calc(-100% - 1px));
+    }
+    .position-wrapper.seat-0 .bet-chip {
+        top: 0;
+        transform: translate(-50%, calc(-100% - var(--side-bet-gap)));
+    }
+    .position-wrapper--sb.seat-0 .bet-chip,
+    .position-wrapper--bb.seat-0 .bet-chip {
+        transform: translate(-50%, calc(-100% - var(--side-bet-gap-blind)));
+    }
+    .position-wrapper.seat-3 .blind-chip {
+        bottom: 0;
+        transform: translate(-50%, calc(100% + 1px));
+    }
+    .position-wrapper.seat-3 .bet-chip {
+        bottom: 0;
+        top: auto;
+        transform: translate(-50%, calc(100% + var(--side-bet-gap)));
+    }
+    .position-wrapper--sb.seat-3 .bet-chip,
+    .position-wrapper--bb.seat-3 .bet-chip {
+        transform: translate(-50%, calc(100% + var(--side-bet-gap-blind)));
+    }
+
+    .position-wrapper.seat-1,
+    .position-wrapper.seat-2,
+    .position-wrapper.seat-4,
+    .position-wrapper.seat-5 {
+        --side-bet-gap: 3px;
+    }
+    .position-wrapper.seat-1 .blind-chip {
+        left: calc(100% + 3px);
+        top: calc(50% - 10px);
+        transform: none;
+    }
+    .position-wrapper.seat-1 .bet-chip {
+        left: 50%;
+        top: 0;
+        transform: translate(-50%, calc(-100% - var(--side-bet-gap)));
+    }
+    .position-wrapper.seat-2 .blind-chip {
+        left: calc(100% + 3px);
+        top: calc(50% + 5px);
+        transform: none;
+    }
+    .position-wrapper.seat-2 .bet-chip {
+        left: 50%;
+        bottom: 0;
+        top: auto;
+        transform: translate(-50%, calc(100% + var(--side-bet-gap)));
+    }
+    .position-wrapper.seat-4 .blind-chip {
+        right: calc(100% + 3px);
+        top: calc(50% + 5px);
+        transform: none;
+    }
+    .position-wrapper.seat-4 .bet-chip {
+        left: 50%;
+        bottom: 0;
+        top: auto;
+        transform: translate(-50%, calc(100% + var(--side-bet-gap)));
+    }
+    .position-wrapper.seat-5 .blind-chip {
+        right: calc(100% + 3px);
+        top: calc(50% - 10px);
+        transform: none;
+    }
+    .position-wrapper.seat-5 .bet-chip {
+        left: 50%;
+        top: 0;
+        transform: translate(-50%, calc(-100% - var(--side-bet-gap)));
+    }
 }
 
 @media (max-width: 600px) {
-    .position-wrapper.seat-0 .blind-chip { top: -2px; }
-    .position-wrapper.seat-0 .bet-chip { top: -18px; }
-    .position-wrapper.seat-3 .blind-chip { bottom: -2px; }
-    .position-wrapper.seat-3 .bet-chip { bottom: -18px; }
-    .position-wrapper.seat-1 .blind-chip,
-    .position-wrapper.seat-2 .blind-chip { left: calc(100% + 2px); top: 30%; transform: translateY(-50%); }
-    .position-wrapper.seat-1 .bet-chip,
-    .position-wrapper.seat-2 .bet-chip { left: calc(100% + 2px); top: 72%; transform: translateY(-50%); }
-    .position-wrapper.seat-4 .blind-chip,
-    .position-wrapper.seat-5 .blind-chip { right: calc(100% + 2px); top: 30%; transform: translateY(-50%); }
-    .position-wrapper.seat-4 .bet-chip,
-    .position-wrapper.seat-5 .bet-chip { right: calc(100% + 2px); top: 72%; transform: translateY(-50%); }
+    .position-wrapper.seat-0,
+    .position-wrapper.seat-3 {
+        --side-bet-gap: 2px;
+        --side-bet-gap-blind: 12px;
+    }
+    .position-wrapper.seat-0 .blind-chip {
+        top: 0;
+        transform: translate(-50%, calc(-100% - 1px));
+    }
+    .position-wrapper.seat-0 .bet-chip {
+        top: 0;
+        transform: translate(-50%, calc(-100% - var(--side-bet-gap)));
+    }
+    .position-wrapper--sb.seat-0 .bet-chip,
+    .position-wrapper--bb.seat-0 .bet-chip {
+        transform: translate(-50%, calc(-100% - var(--side-bet-gap-blind)));
+    }
+    .position-wrapper.seat-3 .blind-chip {
+        bottom: 0;
+        transform: translate(-50%, calc(100% + 1px));
+    }
+    .position-wrapper.seat-3 .bet-chip {
+        bottom: 0;
+        top: auto;
+        transform: translate(-50%, calc(100% + var(--side-bet-gap)));
+    }
+    .position-wrapper--sb.seat-3 .bet-chip,
+    .position-wrapper--bb.seat-3 .bet-chip {
+        transform: translate(-50%, calc(100% + var(--side-bet-gap-blind)));
+    }
+
+    .position-wrapper.seat-1,
+    .position-wrapper.seat-2,
+    .position-wrapper.seat-4,
+    .position-wrapper.seat-5 {
+        --side-bet-gap: 2px;
+    }
+    .position-wrapper.seat-1 .blind-chip {
+        left: calc(100% + 2px);
+        top: calc(50% - 8px);
+        transform: none;
+    }
+    .position-wrapper.seat-1 .bet-chip {
+        left: 50%;
+        top: 0;
+        transform: translate(-50%, calc(-100% - var(--side-bet-gap)));
+    }
+    .position-wrapper.seat-2 .blind-chip {
+        left: calc(100% + 2px);
+        top: calc(50% + 4px);
+        transform: none;
+    }
+    .position-wrapper.seat-2 .bet-chip {
+        left: 50%;
+        bottom: 0;
+        top: auto;
+        transform: translate(-50%, calc(100% + var(--side-bet-gap)));
+    }
+    .position-wrapper.seat-4 .blind-chip {
+        right: calc(100% + 2px);
+        top: calc(50% + 4px);
+        transform: none;
+    }
+    .position-wrapper.seat-4 .bet-chip {
+        left: 50%;
+        bottom: 0;
+        top: auto;
+        transform: translate(-50%, calc(100% + var(--side-bet-gap)));
+    }
+    .position-wrapper.seat-5 .blind-chip {
+        right: calc(100% + 2px);
+        top: calc(50% - 8px);
+        transform: none;
+    }
+    .position-wrapper.seat-5 .bet-chip {
+        left: 50%;
+        top: 0;
+        transform: translate(-50%, calc(-100% - var(--side-bet-gap)));
+    }
 }
 
 
