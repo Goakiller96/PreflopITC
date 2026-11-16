@@ -144,7 +144,7 @@ document.addEventListener('DOMContentLoaded', function() {
             three: expandRange('AA-TT,AKs-AJs,A5s-A4s,KQs-KJs,QJs,AKo-AQo,KQo')
         },
         co: {
-            call:  expandRange('99-22,A9s-A6s,A3s-A2s,K9s-K2s,QTs-Q8s,JTs-J9s,T9s-T8s,98s-97s,87s-86s,76s-75s,65s-64s,54s-53s,43s,ATo,KJo-KTo,QJo'),
+            call:  expandRange('99-22,A9s-A6s,A3s-A2s,K9s-K2s,QTs-Q8s,JTs-J8s,T9s-T8s,98s-97s,87s-86s,76s-75s,65s-64s,54s-53s,43s,ATo,KJo-KTo,QJo'),
             three: expandRange('AA-TT,AKs-ATs,A5s-A4s,KQs-KTs,QJs,AKo-AJo,KQo')
         },
         btn: {
