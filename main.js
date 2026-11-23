@@ -238,7 +238,7 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             btn: {
                 fourBetCall: expandRange('AA-QQ,AKs,AKo'),
-                fourBetFold: expandRange('AJs,KQs-KJs,KQo'),
+                fourBetFold: expandRange('AJs,KQs-KJs,AQo,KQo'),
                 call:        expandRange('JJ-TT,AQs')
             },
             sb: {
